@@ -42,9 +42,9 @@ twig:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   pdo_mysql
+        driver:   pdo_sqlite
         charset:  UTF8
-        path:     "%database_path%"
+        path:     "%kernel.root_dir%/../var/db/data.db3"
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
