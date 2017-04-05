@@ -6,8 +6,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use AppBundle\Entity\VesselMoveStatus;
 use Symfony\Component\Console\Helper\ProgressBar;
+use AppBundle\Entity\VesselMoveStatus;
+use AppBundle\Entity\Vesel;
 
 class DataInsertCsvCommand extends ContainerAwareCommand
 {
@@ -27,8 +28,8 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 	protected function configure()
 	{
 		$this->setName("data:insert:csv")
-			->setDescription('Insertd data from a csv file.')
-			->setHelp('This command allows you to insert the data from a csv file')
+			->setDescription('Insert data from a csv file.')
+			->setHelp('This command allows you to insert the data from a csv file saved in your filesystem')
 			->addArgument(self::CSV_FILE_INPUT_PARAM,InputArgument::REQUIRED,'The pathy fo the csv file to read');
 	}
 	
@@ -40,7 +41,13 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 		
 		$csvFile=$input->getArgument(self::CSV_FILE_INPUT_PARAM);
 		$csvFile=fopen($csvFile,'r');
-				
+		
+		/**
+		 * In order to avoid double-writing the Vesel entities
+		 * we keep them in this associative array
+		 */
+		$veselsInserted=[];
+		
 		if($csvFile===FALSE){
 			$output->writeln("<error>Could not open the file.\n Please ensure that you given the correct path and have the correct read permissions.</error>");
 		} else {
@@ -54,9 +61,20 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 					$firstRowHasAlreadyBeenRead=true;
 					continue;
 				}
-								
-				$entity=new VesselMoveStatus(
-											$data[self::MMSID_CSV_ROW_POS],
+				
+				//We need to keep the vesel we already inserte
+				$veselToInsert=null;
+				$mmsiFromCsv=$data[self::MMSID_CSV_ROW_POS];
+				if(!isset($veselsInserted[$mmsiFromCsv])){
+					$veselToInsert=new Vesel($mmsiFromCsv);
+					$em->persist($veselToInsert);
+					$veselsInserted[$mmsiFromCsv]=$veselToInsert;
+				} else {
+					$veselToInsert=$veselsInserted[$mmsiFromCsv];
+				}
+				
+				$moveStatusEntity=new VesselMoveStatus(
+											$veselToInsert,
 											$data[self::STATUS_CSV_ROW_POS],
 											$data[self::SPEED_CSV_ROW_POS],
 											$data[self::LONGTITUDE_CSV_ROW_POS],
@@ -66,7 +84,7 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 											$data[self::ROTATION_CSV_ROW_POS],
 											$data[self::TIMESTAMP_CSV_ROW_POS]
 										); 
-				$em->persist($entity);
+				$em->persist($moveStatusEntity);
 				$progress->advance();
 				sleep(0.5);
 			}

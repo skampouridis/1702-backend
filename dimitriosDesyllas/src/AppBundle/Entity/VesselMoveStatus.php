@@ -87,7 +87,6 @@ class VesselMoveStatus
 			$timestamp=null
 	){
 		$this->setVesel($vesel)
-			->setMmsi($mmsi)
 			->setStatus($status)
 			->setSpeed($speed)
 			->setLogtitude($long)
