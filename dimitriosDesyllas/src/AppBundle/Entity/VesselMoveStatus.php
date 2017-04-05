@@ -91,6 +91,7 @@ class VesselMoveStatus
 			->setSpeed($speed)
 			->setLogtitude($long)
 			->setLatitude($lat)
+			->setCourse($course)
 			->setHeading($heading)
 			->setRotation($rotation)
 			->setTimesptamp($timestamp);

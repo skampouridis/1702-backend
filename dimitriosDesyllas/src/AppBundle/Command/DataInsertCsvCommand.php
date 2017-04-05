@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use AppBundle\Entity\VesselMoveStatus;
 use AppBundle\Entity\Vesel;
+use Doctrine\ORM\EntityManager;
 
 class DataInsertCsvCommand extends ContainerAwareCommand
 {
@@ -24,6 +25,16 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 	const ROTATION_CSV_ROW_POS=7;
 	const TIMESTAMP_CSV_ROW_POS=8;
 	
+	/**
+	 * We need to store the vesels we alreade Inserted in order NOT to inster it again.
+	 * @var array
+	 */
+	private $veselsInserted=[];
+	
+	/**
+	 * @var EntityManager
+	 */
+	private $em=null;
 	
 	protected function configure()
 	{
@@ -35,12 +46,13 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 	
 	protected function execute(InputInterface $input,OutputInterface $output)
 	{
-		$em=$this->getContainer()->get('doctrine')->getManager();
+		$this->em=$this->getContainer()->get('doctrine')->getManager();
 		
+		//Progress of insertion
 		$progress = new ProgressBar($output);
 		
-		$csvFile=$input->getArgument(self::CSV_FILE_INPUT_PARAM);
-		$csvFile=fopen($csvFile,'r');
+		$csvFileName=$input->getArgument(self::CSV_FILE_INPUT_PARAM);
+		$csvFile=fopen($csvFileName,'r');
 		
 		/**
 		 * In order to avoid double-writing the Vesel entities
@@ -52,27 +64,15 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 			$output->writeln("<error>Could not open the file.\n Please ensure that you given the correct path and have the correct read permissions.</error>");
 		} else {
 			$firstRowHasAlreadyBeenRead=false;
-			
-			$output->writeln("<fg=cyan>Could not open the file.\n Please ensure that you given the correct path and have the correct read permissions.</>");
+			$output->writeln("<fg=cyan>Writing the data from CSV file into the databases</>");
 			$progress->start();
 			while(($data=fgetcsv($csvFile,0,";"))!==FALSE){
-				//First row does not contain usefull data therefore we ignore it completely.
+				//First row does not contain any sort of usefull data therefore we ignore it completely.
 				if(!$firstRowHasAlreadyBeenRead){
 					$firstRowHasAlreadyBeenRead=true;
 					continue;
 				}
-				
-				//We need to keep the vesel we already inserte
-				$veselToInsert=null;
-				$mmsiFromCsv=$data[self::MMSID_CSV_ROW_POS];
-				if(!isset($veselsInserted[$mmsiFromCsv])){
-					$veselToInsert=new Vesel($mmsiFromCsv);
-					$em->persist($veselToInsert);
-					$veselsInserted[$mmsiFromCsv]=$veselToInsert;
-				} else {
-					$veselToInsert=$veselsInserted[$mmsiFromCsv];
-				}
-				
+				$veselToInsert=$this->writeVesselIfNotExists($data[self::MMSID_CSV_ROW_POS]);
 				$moveStatusEntity=new VesselMoveStatus(
 											$veselToInsert,
 											$data[self::STATUS_CSV_ROW_POS],
@@ -84,12 +84,32 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 											$data[self::ROTATION_CSV_ROW_POS],
 											$data[self::TIMESTAMP_CSV_ROW_POS]
 										); 
-				$em->persist($moveStatusEntity);
+				$this->em->persist($moveStatusEntity);
+				$this->em->flush($moveStatusEntity);
 				$progress->advance();
 				sleep(0.5);
 			}
 			$progress->finish();
 			$output->writeln('');
 		}
+	}
+	
+	/**
+	 * @return Vesel
+	 */
+	private function writeVesselIfNotExists($mmsiFromCsv)
+	{
+		$veselToInsert=null;
+		
+		if(!isset($this->veselsInserted[$mmsiFromCsv])){
+			$veselToInsert=new Vesel($mmsiFromCsv);
+			$this->em->persist($veselToInsert);
+			$this->em->flush($veselToInsert);
+			$this->veselsInserted[$mmsiFromCsv]=$veselToInsert;
+		} else {
+			$veselToInsert=$this->veselsInserted[$mmsiFromCsv];
+		}
+		
+		return $veselToInsert;
 	}
 }
