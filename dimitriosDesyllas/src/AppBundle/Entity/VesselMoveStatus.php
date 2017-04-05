@@ -3,11 +3,11 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity\Vesel;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="vesssel",indexes={
- * 	@ORM\Index(name="index_mmsi",columns={"mmsi"}),
+ * @ORM\Table(name="vessel_position_status",indexes={
  *  @ORM\Index(name="position",columns={"long","lat"})
  * })
  */
@@ -21,10 +21,11 @@ class VesselMoveStatus
 	private $id=null;
 	
 	/**
-	 * @ORM\Column(name="mmsi",type="integer")
-	 * @var integer|null
+	 * @ORM\ManyToOne(targetEntity="Vesel",inversedBy="veselMoveStatuses")
+	 * @ORM\JoinColumn(name="vesel_id", referencedColumnName="id")
+	 * @var Vesel
 	 */
-	private $mmsi=null;
+	private $vesel=null;
 	
 	/**
 	 * @ORM\Column(name="status",type="integer")
@@ -75,7 +76,7 @@ class VesselMoveStatus
 	private $timesptamp=null;
 
 	public function __construct(
-			$mmsi=null,
+			Vesel $vesel=null,
 			$status=null,
 			$speed=null,
 			$long=null,
@@ -85,7 +86,8 @@ class VesselMoveStatus
 			$rotation=null,
 			$timestamp=null
 	){
-		$this->setMmsi($mmsi)
+		$this->setVesel($vesel)
+			->setMmsi($mmsi)
 			->setStatus($status)
 			->setSpeed($speed)
 			->setLogtitude($long)
@@ -315,5 +317,29 @@ class VesselMoveStatus
     public function getTimesptamp()
     {
         return $this->timesptamp;
+    }
+
+    /**
+     * Set vesel
+     *
+     * @param \AppBundle\Entity\Vesel $vesel
+     *
+     * @return VesselMoveStatus
+     */
+    public function setVesel(\AppBundle\Entity\Vesel $vesel = null)
+    {
+        $this->vesel = $vesel;
+
+        return $this;
+    }
+
+    /**
+     * Get vesel
+     *
+     * @return \AppBundle\Entity\Vesel
+     */
+    public function getVesel()
+    {
+        return $this->vesel;
     }
 }
