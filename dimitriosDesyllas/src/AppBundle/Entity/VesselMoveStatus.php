@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="vesssel",indexes={
  * 	@ORM\Index(name="index_mmsi",columns={"mmsi"}),
- *  @ORM\Index(name="index_station",columns={"station"}),
  *  @ORM\Index(name="position",columns={"long","lat"})
  * })
  */
@@ -28,10 +27,10 @@ class VesselMoveStatus
 	private $mmsi=null;
 	
 	/**
-	 * @ORM\Column(name="station",type="integer")
+	 * @ORM\Column(name="status",type="integer")
 	 * @var integer|null
 	 */
-	private $station=null;
+	private $status=null;
 	
 	/**
 	 * @ORM\Column(name="speed",type="integer")
@@ -40,14 +39,14 @@ class VesselMoveStatus
 	private $speed=null;
 	
 	/**
-	 * @ORM\Column(name="long",type="integer")
-	 * @var integer|null
+	 * @ORM\Column(name="long",type="float")
+	 * @var float|null
 	 */
 	private $logtitude=null;
 	
 	/**
-	 * @ORM\Column(name="lat",type="integer")
-	 * @var integer|null
+	 * @ORM\Column(name="lat",type="float")
+	 * @var float|null
 	 */
 	private $latitude=null;
 	
@@ -75,6 +74,27 @@ class VesselMoveStatus
 	 */
 	private $timesptamp=null;
 
+	public function __construct(
+			$mmsi=null,
+			$status=null,
+			$speed=null,
+			$long=null,
+			$lat=null,
+			$course=null,
+			$heading=null,
+			$rotation=null,
+			$timestamp=null
+	){
+		$this->setMmsi($mmsi)
+			->setStatus($status)
+			->setSpeed($speed)
+			->setLogtitude($long)
+			->setLatitude($lat)
+			->setHeading($heading)
+			->setRotation($rotation)
+			->setTimesptamp($timestamp);
+	}
+	
     /**
      * Get id
      *
@@ -110,37 +130,33 @@ class VesselMoveStatus
     }
 
     /**
-     * Set station
-     *
-     * @param integer $station
-     *
-     * @return VesselMoveStatus
+     * 
+     * @param integer $status
+     * @return \AppBundle\Entity\VesselMoveStatus
      */
-    public function setStation($station)
+    public function setStatus($status)
     {
-        $this->station = $station;
-
-        return $this;
+    	$this->status=$status;
+    	return $this;
     }
-
+    
     /**
-     * Get station
-     *
-     * @return integer
+     * 
+     * @return \AppBundle\Entity\integer|NULL
      */
-    public function getStation()
+    public function getStatus()
     {
-        return $this->station;
+    	return $this->status;
     }
 
     /**
      * Set speed
      *
-     * @param \intrger $speed
+     * @param integer $speed
      *
      * @return VesselMoveStatus
      */
-    public function setSpeed(\intrger $speed)
+    public function setSpeed($speed)
     {
         $this->speed = $speed;
 
@@ -150,7 +166,7 @@ class VesselMoveStatus
     /**
      * Get speed
      *
-     * @return \intrger
+     * @return float
      */
     public function getSpeed()
     {
@@ -280,13 +296,13 @@ class VesselMoveStatus
     /**
      * Set timesptamp
      *
-     * @param \DateTime $timesptamp
+     * @param string $timesptamp
      *
      * @return VesselMoveStatus
      */
-    public function setTimesptamp(DateTime $timesptamp)
+    public function setTimesptamp($timesptamp)
     {
-        $this->timesptamp = $timesptamp;
+    	$this->timesptamp =  date_create_from_format("Y-m-d H:i:s.u",$timesptamp);
 
         return $this;
     }
