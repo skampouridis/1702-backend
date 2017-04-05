@@ -34,7 +34,7 @@ class VesselMoveStatus
 	private $station=null;
 	
 	/**
-	 * @ORM\Column(name="speed",type="intrger")
+	 * @ORM\Column(name="speed",type="integer")
 	 * @var integer|null
 	 */
 	private $speed=null;
