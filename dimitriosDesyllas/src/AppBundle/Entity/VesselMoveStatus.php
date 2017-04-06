@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Vesel;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\VeselRouteRepository")
  * @ORM\Table(name="vessel_position_status",indexes={
  *  @ORM\Index(name="position",columns={"long","lat"})
  * })
@@ -70,7 +70,7 @@ class VesselMoveStatus
 	private $rotation=null;
 	
 	/**
-	 * @ORM\Column(name="timestamp",type="date")
+	 * @ORM\Column(name="timestamp",type="datetime")
 	 * @var Datetime|null
 	 */
 	private $timesptamp=null;
@@ -305,7 +305,6 @@ class VesselMoveStatus
     public function setTimesptamp($timesptamp)
     {
     	$this->timesptamp =  date_create_from_format("Y-m-d H:i:s.u",$timesptamp);
-
         return $this;
     }
 
