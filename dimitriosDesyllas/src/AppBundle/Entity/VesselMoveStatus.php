@@ -73,7 +73,7 @@ class VesselMoveStatus
 	 * @ORM\Column(name="timestamp",type="datetime")
 	 * @var Datetime|null
 	 */
-	private $timesptamp=null;
+	private $timestamp=null;
 
 	public function __construct(
 			Vesel $vesel=null,
@@ -304,7 +304,7 @@ class VesselMoveStatus
      */
     public function setTimesptamp($timesptamp)
     {
-    	$this->timesptamp =  date_create_from_format("Y-m-d H:i:s.u",$timesptamp);
+    	$this->timestamp =  date_create_from_format("Y-m-d H:i:s.u",$timesptamp);
         return $this;
     }
 
@@ -315,7 +315,7 @@ class VesselMoveStatus
      */
     public function getTimesptamp()
     {
-        return $this->timesptamp;
+        return $this->timestamp;
     }
 
     /**

@@ -3,36 +3,52 @@
 namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use AppBundle\Helpers\VeselRepositoryInputValidator;
+use AppBundle\Helpers\InputValidator;
 use \DateTime;
 
 class VeselRouteRepository extends EntityRepository
 {
-	
-	public function getRoutesByMmsid(array $mmsids=[],
-									$longitute_min=null,
-									$longtitude_max=null,
-									$latitude_min=null,
-									$latitude_max=null,
+
+	/**
+	 * @param array $mmsids
+	 * @param unknown $longituteMin
+	 * @param unknown $longtitudeMax
+	 * @param unknown $latitudeMin
+	 * @param unknown $latitudeMax
+	 * @param \Datetime $timeInterval
+	 * 
+	 * @throws EmptyParamGivenException
+	 * @throws Exception
+	 * 
+	 * @return Vesel[] with their routes
+	 */
+	public function getRoutes(array $mmsids=[],
+									$longituteMin=null,
+									$longtitudeMax=null,
+									$latitudeMin=null,
+									$latitudeMax=null,
 									\Datetime $timeInterval=null
 	) {
 		$em=$this->getEntityManager();
 		
 		$query=$em->createQueryBuilder('v')
 				->from('AppBundle:Vesel','v')
-				->innerJoin('Appbundle:VeselMoveStatus', 'm')
-				->select('v');
+				->innerJoin('AppBundle:VesselMoveStatus', 'm')
+				->select('v')
+				->orderBy('m.timestamp','ASC');
 		
 		
-		if(VeselRepositoryInputValidator::validateCoordinatesRange($longitute_min,$longtitude_max,$latitude_min,$latitude_max)){
+				if(InputValidator::validateCoordinatesRange($longituteMin,$longtitudeMax,$latitudeMin,$latitudeMax)){
 			$query->where("m.long BETWEEN :long_min AND :long_max")
 				->andWhere("m.lat BETWEEN :lat_min AND :lat_max")
-				->setParameters(['long_min'=>$longitute_min,'long_max'=>$longtitude_max,'lat_min'=>$latitude_min,'lat_max'=>$latitude_max]);
+				->setParameters(['long_min'=>$longituteMin,'long_max'=>$longtitudeMax,'lat_min'=>$latitudeMin,'lat_max'=>$latitudeMax]);
 		}
 		
 		if(!empty($mmsids)){
-			$query->andWhere('v.mmsid IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+			$query->andWhere('v.mmsi IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
 		}
 		
+		$query = $query->getQuery();
+		return $query->getResult();
 	}
 }
