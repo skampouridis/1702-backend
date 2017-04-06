@@ -32,21 +32,21 @@ class VeselRouteRepository extends EntityRepository
 		$em=$this->getEntityManager();
 		
 		$query=$em->createQueryBuilder('v')
-				->from('AppBundle:Vesel','v')
-				->innerJoin('AppBundle:VesselMoveStatus', 'm')
+				->from('AppBundle:Vesel', 'v')
+				->innerJoin('v.veselMoveStatuses','m')
 				->select('v')
 				->orderBy('m.timestamp','ASC');
 		
 		
-				if(InputValidator::validateCoordinatesRange($longituteMin,$longtitudeMax,$latitudeMin,$latitudeMax)){
-			$query->where("m.long BETWEEN :long_min AND :long_max")
-				->andWhere("m.lat BETWEEN :lat_min AND :lat_max")
-				->setParameters(['long_min'=>$longituteMin,'long_max'=>$longtitudeMax,'lat_min'=>$latitudeMin,'lat_max'=>$latitudeMax]);
-		}
+// 		if(InputValidator::validateCoordinatesRange($longituteMin,$longtitudeMax,$latitudeMin,$latitudeMax)){
+// 			$query->where("m.long BETWEEN :long_min AND :long_max")
+// 				->andWhere("m.lat BETWEEN :lat_min AND :lat_max")
+// 				->setParameters(['long_min'=>$longituteMin,'long_max'=>$longtitudeMax,'lat_min'=>$latitudeMin,'lat_max'=>$latitudeMax]);
+// 		}
 		
-		if(!empty($mmsids)){
-			$query->andWhere('v.mmsi IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
-		}
+// 		if(!empty($mmsids)){
+// 			$query->andWhere('v.mmsi IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+// 		}
 		
 		$query = $query->getQuery();
 		return $query->getResult();

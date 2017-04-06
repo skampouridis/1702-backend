@@ -11,3 +11,8 @@ services:
   class: AppBundle\Repository\VeselRouteRepository
   factory: ["@doctrine","getRepository"]
   arguments: ["AppBundle:VesselMoveStatus"]
+
+ app.exception_listener:
+  class: AppBundle\EventListener\ExceptionListener
+  tags:
+   - { name: kernel.event_listener, event: kernel.exception }

@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Exception\EmptyParamGivenException;
 
 class VeselApiEndpointsController extends Controller
 {
@@ -21,21 +22,7 @@ class VeselApiEndpointsController extends Controller
 	 */
 	public function getVeselRoutesJson(Request $request)
 	{
-		$response=new Response();
-		$response->headers->set('Content-type',self::RESPONSE_JSON);
-		
-		try{
-			$data=$this->getVeselRoutesFromDb($request);
-			$response->setContent(json_encode($data));
-		} catch(EmptyParamGivenException $ep) {
-			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-			$response->setContent(json_encode(['message'=>$ep->getMessage()]));
-		} catch(Exception $e) {
-			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-			$response->setContent(json_encode(['message'=>$ep->getMessage()]));
-		}
-		
-		return $response;
+		return $this->jsonXmlSerializeResponse($request,self::RESPONSE_JSON);
 	}
 
 	/**
@@ -45,8 +32,44 @@ class VeselApiEndpointsController extends Controller
 	 */
 	public function getVeselRoutesXml(Request $request)
 	{
+		return $this->jsonXmlSerializeResponse($request,self::RESPONSE_XML);
+	}
+	
+	/**
+	 * I developed this method because the code is similar and only a very small ammount of it changes.
+	 * 
+	 * @param Request $request
+	 * @param unknown $whatToSerialize
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * 
+	 */
+	private function jsonXmlSerializeResponse(Request $request,$whatToSerialize)
+	{
 		$response=new Response();
-		$response->setHeader('Content-type',self::RESPONSE_XML);
+		$response->headers->set('Content-type',$whatToSerialize);
+		
+		$serialize=null;
+		switch($whatToSerialize) {
+			case self::RESPONSE_JSON:
+				$serialize='json';
+				break;
+			case self::RESPONSE_XML:
+				$serialize='xml';
+				break;
+		}
+		
+		try {
+			$data=$this->getVeselRoutesFromDb($request);
+			$serializer=$this->get('jms_serializer');
+			$data=$serializer->serialize($data, $serialize);
+			$response->setContent($data);
+		} catch(EmptyParamGivenException $ep) {
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			$response->setContent(json_encode(['message'=>$ep->getMessage()]));
+		} catch(\Exception $e) {
+			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+			$response->setContent(json_encode(['message'=>$e->getMessage()]));
+		}
 		
 		return $response;
 	}
@@ -72,7 +95,7 @@ class VeselApiEndpointsController extends Controller
 	 * because I wanted to have more clean code and reusable one.
 	 * 
 	 * @return void
-	 * @throws 
+	 * @throws EmptyParamGivenException
 	 * @throws Exception
 	 * 
 	 */
@@ -92,7 +115,6 @@ class VeselApiEndpointsController extends Controller
 		$repository=$this->get('vesel_repository');
 		
 		$data=$repository->getRoutes($veselMMSID,$latitudeMin,$latitudeMax,$longtitudeMin,$longtitudeMax);
-		
 		return $data;
 	}
 }

@@ -27,6 +27,7 @@ class Vesel
     private $mmsi;
 
     /**
+     * @ORM\OneToMany(targetEntity="VesselMoveStatus",mappedBy="vesel")
      * @var \Doctrine\Common\Collections\Collection
      */
     private $veselMoveStatuses;
