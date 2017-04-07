@@ -72,7 +72,7 @@ class VeselApiEndpointsController extends Controller
 			$data=$this->getVeselRoutesFromDb($request);
 			if($whatToSerialize==='csv')//Only CSV will be displayed differently
 			{
-				$data=$this->get('twig')->render('routes/routes.csv.twig',['vesels'=>$data]);
+				$data=$this->get('twig')->render('routes/routes.csv.twig',['routes'=>$data]);
 			} else {
 				$serializer=$this->get('jms_serializer');
 				$data=$serializer->serialize($data, $whatToSerialize);

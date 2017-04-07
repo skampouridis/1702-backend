@@ -40,13 +40,6 @@ class VeselRouteRepository extends EntityRepository
 				->addOrderBy('v.mmsi','ASC')
 				->addOrderBy('m.timestamp','DESC');
 
-		$paramsToValidate=[
-												RouteInputParameter::PARAM_LONGTITUDE_MIN=>$longituteMin,
-												RouteInputParameter::PARAM_LONGTITUDE_MAX=>$longtitudeMax,
-												RouteInputParameter::PARAM_LATITUDE_MIN=>$latitudeMin,
-												RouteInputParameter::PARAM_LATITUDE_MAX=>$latitudeMax
-											];
-
 		if(!empty($longituteMin)){
 			$query->andWhere('m.logtitude >= :long_min')->setParameter(':long_min',$longituteMin);
 		}
