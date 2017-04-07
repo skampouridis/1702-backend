@@ -5,6 +5,7 @@ namespace AppBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use AppBundle\Helpers\InputValidator;
 use \DateTime;
+use AppBundle\Constants\RouteInputParameter;
 
 class VeselRouteRepository extends EntityRepository
 {
@@ -38,13 +39,18 @@ class VeselRouteRepository extends EntityRepository
 				->orderBy('v.mmsi','ASC')
 				->orderBy('m.timestamp','ASC');
 
+		$paramsToValidate=[
+												RouteInputParameter::PARAM_LONGTITUDE_MIN=>$longituteMin,
+												RouteInputParameter::PARAM_LONGTITUDE_MAX=>$longtitudeMax,
+												RouteInputParameter::PARAM_LATITUDE_MIN=>$latitudeMin,
+												RouteInputParameter::PARAM_LATITUDE_MAX=>$latitudeMax
+											];
+		if(InputValidator::allParamsEmptyOrNoEmptyCheck($paramsToValidate)){
+			$query->where("m.long BETWEEN :long_min AND :long_max")
+				->andWhere("m.lat BETWEEN :lat_min AND :lat_max")
+				->setParameters(['long_min'=>$longituteMin,'long_max'=>$longtitudeMax,'lat_min'=>$latitudeMin,'lat_max'=>$latitudeMax]);
+		}
 
-		// if(InputValidator::validateCoordinatesRange($longituteMin,$longtitudeMax,$latitudeMin,$latitudeMax)){
-		// 	$query->where("m.long BETWEEN :long_min AND :long_max")
-		// 		->andWhere("m.lat BETWEEN :lat_min AND :lat_max")
-		// 		->setParameters(['long_min'=>$longituteMin,'long_max'=>$longtitudeMax,'lat_min'=>$latitudeMin,'lat_max'=>$latitudeMax]);
-		// }
-		//
 		if(!empty($mmsids)){
 			$query->andWhere('v.mmsi IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
 		}

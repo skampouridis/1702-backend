@@ -1,58 +1,49 @@
-<?php 
+<?php
 
 namespace AppBundle\Helpers;
 
 use AppBundle\Exception\EmptyParamGivenException;
 
+/**
+* Class that contains validation methods for input parameters
+*/
 class InputValidator
 {
+
 	/**
-	 * 
-	 * @param unknown $longitute_min
-	 * @param unknown $longtitude_max
-	 * @param unknown $latitude_min
-	 * @param unknown $latitude_max
-	 * @throws EmptyParamGivenException
-	 * @return boolean true if all params given else false 
-	 */
-	public static function validateCoordinatesRange($longitute_min=null,$longtitude_max=null,$latitude_min=null,$latitude_max=null)
+	* @param array $values as array with the parameter values.
+	* @return bool True if all values Not Empty, False if all values are empty
+	* @throws EmptyParamGivenException when some parameters have value and some are empty
+	*/
+	public static function allParamsEmptyOrNoEmptyCheck(array $values)
 	{
-		if(
-				!empty($longitute_min)&&
-				!empty($longtitude_max)&&
-				!empty($latitude_min)&&
-				!empty($latitude_max)
-		){
-			return true;
-		} else if(	empty($longitute_min)&&
-				!empty($longtitude_max)&&
-				!empty($latitude_min)&&
-				!empty($latitude_max)
-		) {
-			throw new EmptyParamGivenException('long_min');
-		} elseif(
-						!empty($longitute_min)&&
-						empty($longtitude_max)&&
-						!empty($latitude_min)&&
-						!empty($latitude_max)
-		) {
-			throw new EmptyParamGivenException('long_max');
-		} elseif(
-						!empty($longitute_min)&&
-						!empty($longtitude_max)&&
-						empty($latitude_min)&&
-						!empty($latitude_max)
-		){
-			throw new EmptyParamGivenException('lat_min');
-		} elseif(
-						!empty($longitute_min)&&
-						!empty($longtitude_max)&&
-						!empty($latitude_min)&&
-						empty($latitude_max)
-		){
-			throw new EmptyParamGivenException('lat_max');
+		$valueNum=count($values);
+		$emptyValues=0;
+		$nonEmptyValues=0;
+
+		$emptyParams=array();
+
+		foreach($values as $key=>$value){
+			if(empty($value))
+			{
+				$emptyValues++;
+				$emptyParams[]=$key;
+			} else {
+				$nonEmptyValues++;
+			}
 		}
-		
-		return false;
+
+		$emptyValuesOk=($emptyValues===$valueNum);
+		$nonEmptyValuesOk=($nonEmptyValues===$valueNum);
+
+		if($emptyValuesOk || $nonEmptyValuesOk) {
+				return true;
+		} elseif($emptyValuesOk) {
+				return false;
+		} else {
+			throw new EmptyParamGivenException(implode($emptyParams));
+		}
+
 	}
+
 }

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Exception\EmptyParamGivenException;
 use AppBundle\Exception\ApiEndpointException;
+use AppBundle\Constants\RouteInputParameter;
 
 class VeselApiEndpointsController extends Controller
 {
@@ -100,20 +101,20 @@ class VeselApiEndpointsController extends Controller
 	 */
 	private function getVeselRoutesFromDb(Request $request)
 	{
-		$veselMMSID=$request->get('mmsi');
+		$veselMMSID=$request->get(RouteInputParameter::PARAM_MMSI);
 
 		if(is_string($veselMMSID)){
 			$veselMMSID=explode(";",$veselMMSID);
 		}
 
-		$latitudeMin=$request->get('latitude_min');
-		$latitudeMax=$request->get('latitude_max');
-		$longtitudeMin=$request->get('longtitude_min');
-		$longtitudeMax=$request->get('longtitude_max');
+		$latitudeMin=$request->get(RouteInputParameter::PARAM_LATITUDE_MIN);
+		$latitudeMax=$request->get(RouteInputParameter::PARAM_LATITUDE_MAX);
+		$longtitudeMin=$request->get(RouteInputParameter::PARAM_LONGTITUDE_MIN);
+		$longtitudeMax=$request->get(RouteInputParameter::PARAM_LONGTITUDE_MAX);
 
 		$repository=$this->get('vesel_repository');
 
-		$data=$repository->getRoutes($veselMMSID,$latitudeMin,$latitudeMax,$longtitudeMin,$longtitudeMax);
+		$data=$repository->getRoutes($veselMMSID,$longtitudeMin,$longtitudeMax,$latitudeMin,$latitudeMax);
 		return $data;
 	}
 }
