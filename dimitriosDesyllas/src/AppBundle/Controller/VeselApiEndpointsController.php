@@ -8,11 +8,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Exception\EmptyParamGivenException;
+use AppBundle\Exception\ApiEndpointException;
 
 class VeselApiEndpointsController extends Controller
 {
 	const RESPONSE_XML='application/xml';
-	const RESPONSE_CSV='application/csv';
+	const RESPONSE_CSV='text/csv';
 	const RESPONSE_JSON='application/json';
 	
 	/**
@@ -22,7 +23,7 @@ class VeselApiEndpointsController extends Controller
 	 */
 	public function getVeselRoutesJson(Request $request)
 	{
-		return $this->jsonXmlSerializeResponse($request,self::RESPONSE_JSON);
+		return $this->getApiResponse($request,self::RESPONSE_JSON);
 	}
 
 	/**
@@ -32,7 +33,17 @@ class VeselApiEndpointsController extends Controller
 	 */
 	public function getVeselRoutesXml(Request $request)
 	{
-		return $this->jsonXmlSerializeResponse($request,self::RESPONSE_XML);
+		return $this->getApiResponse($request,self::RESPONSE_XML);
+	}
+	
+	/**
+	 * Fetch all ship routes as json
+	 * @Route("/routes.csv",name="getRoutesAsCsv")
+	 * @Method("GET")
+	 */
+	public function getVeselRoutesCsv(Request $request)
+	{	
+		return $this->getApiResponse($request,self::RESPONSE_CSV);
 	}
 	
 	/**
@@ -43,60 +54,34 @@ class VeselApiEndpointsController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * 
 	 */
-	private function jsonXmlSerializeResponse(Request $request,$whatToSerialize)
+	private function getApiResponse(Request $request,$whatToSerialize)
 	{
 		$response=new Response();
 		$response->headers->set('Content-type',$whatToSerialize);
 		
-		$whatFormToSerializeTheResponse=null;
-		switch($whatToSerialize) {
-			case self::RESPONSE_JSON:
-				$whatFormToSerializeTheResponse='json';
-				break;
-			case self::RESPONSE_XML:
-				$whatFormToSerializeTheResponse='xml';
-				break;
-		}
+		$whatToSerialize=explode('/',$whatToSerialize);
+		$whatToSerialize=end($whatToSerialize);
+		$response->setContent($whatToSerialize);
+		
+		//The return result
+		$data=null;
 		
 		try {
 			$data=$this->getVeselRoutesFromDb($request);
-			$serializer=$this->get('jms_serializer');
-			$data=$serializer->serialize($data, $whatFormToSerializeTheResponse);
-			$response->setContent($data);
+			if(!$whatToSerialize==='csv')//Only CSV will be displayed differently
+			{				
+				$data=$this->get('twig')->render('routes/routes.csv.twig',['vesels'=>$data]);
+			} else {
+				$serializer=$this->get('jms_serializer');
+				$data=$serializer->serialize($data, $whatToSerialize);	
+			}
 		} catch(EmptyParamGivenException $ep) {
-			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-			$response->setContent(json_encode(['message'=>$ep->getMessage()]));
+			throw new ApiEndpointException($ep->getMessage(),$response->headers->all(),Response::HTTP_BAD_REQUEST,$whatToSerialize);
 		} catch(\Exception $e) {
-			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-			$response->setContent(json_encode(['message'=>$e->getMessage()]));
+			throw new ApiEndpointException($e->getMessage(),$response->headers->all(),Response::HTTP_INTERNAL_SERVER_ERROR,$whatToSerialize);
 		}
 		
-		return $response;
-	}
-	
-	
-	/**
-	 * Fetch all ship routes as json
-	 * @Route("/routes.csv",name="getRoutesAsCsv")
-	 * @Method("GET")
-	 */
-	public function getVeselRoutesCsv(Request $request)
-	{	
-		$response=new Response();
-		$response->headers->set('Content-type',self::RESPONSE_CSV);
-		
-		try {
-			$data=$this->getVeselRoutesFromDb($request);
-			$csvContent=$this->get('twig')->render('routes/routes.csv.twig',['vesels'=>$data]);
-			$response->setContent($csvContent);
-		} catch(EmptyParamGivenException $ep) {
-			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
-			$response->setContent($ep->getMessage());
-		} catch(\Exception $e) {
-			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-			$response->setContent($e->getMessage());
-		}
-		
+		$response->setContent($data);
 		return $response;
 	}
 	
