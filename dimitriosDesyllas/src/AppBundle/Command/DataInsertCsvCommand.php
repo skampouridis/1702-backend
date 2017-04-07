@@ -54,12 +54,6 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 		$csvFileName=$input->getArgument(self::CSV_FILE_INPUT_PARAM);
 		$csvFile=fopen($csvFileName,'r');
 		
-		/**
-		 * In order to avoid double-writing the Vesel entities
-		 * we keep them in this associative array
-		 */
-		$veselsInserted=[];
-		
 		if($csvFile===FALSE){
 			$output->writeln("<error>Could not open the file.\n Please ensure that you given the correct path and have the correct read permissions.</error>");
 		} else {
