@@ -302,7 +302,7 @@ class VesselMoveStatus
      *
      * @return VesselMoveStatus
      */
-    public function setTimesptamp($timesptamp)
+    public function setTimestamp($timesptamp)
     {
     	$this->timestamp =  date_create_from_format("Y-m-d H:i:s.u",$timesptamp);
         return $this;
@@ -313,7 +313,7 @@ class VesselMoveStatus
      *
      * @return \DateTime
      */
-    public function getTimesptamp()
+    public function getTimestamp()
     {
         return $this->timestamp;
     }

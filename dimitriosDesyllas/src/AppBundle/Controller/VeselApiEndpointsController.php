@@ -48,20 +48,20 @@ class VeselApiEndpointsController extends Controller
 		$response=new Response();
 		$response->headers->set('Content-type',$whatToSerialize);
 		
-		$serialize=null;
+		$whatFormToSerializeTheResponse=null;
 		switch($whatToSerialize) {
 			case self::RESPONSE_JSON:
-				$serialize='json';
+				$whatFormToSerializeTheResponse='json';
 				break;
 			case self::RESPONSE_XML:
-				$serialize='xml';
+				$whatFormToSerializeTheResponse='xml';
 				break;
 		}
 		
 		try {
 			$data=$this->getVeselRoutesFromDb($request);
 			$serializer=$this->get('jms_serializer');
-			$data=$serializer->serialize($data, $serialize);
+			$data=$serializer->serialize($data, $whatFormToSerializeTheResponse);
 			$response->setContent($data);
 		} catch(EmptyParamGivenException $ep) {
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -83,13 +83,26 @@ class VeselApiEndpointsController extends Controller
 	public function getVeselRoutesCsv(Request $request)
 	{	
 		$response=new Response();
+		$response->headers->set('Content-type',self::RESPONSE_CSV);
+		
+		try {
+			$data=$this->getVeselRoutesFromDb($request);
+			$csvContent=$this->get('twig')->render('routes/routes.csv.twig',['vesels'=>$data]);
+			$response->setContent($csvContent);
+		} catch(EmptyParamGivenException $ep) {
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
+			$response->setContent($ep->getMessage());
+		} catch(\Exception $e) {
+			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+			$response->setContent($e->getMessage());
+		}
+		
 		return $response;
 	}
 	
 	
 	/**
-	 * Calls the repository (that has the role of the model) 
-	 * and returns the data.
+	 * Calls the repository (that has the role of the mvc MODEL) and returns the data.
 	 * 
 	 * I seperated the model call with the other route functions
 	 * because I wanted to have more clean code and reusable one.
@@ -98,6 +111,7 @@ class VeselApiEndpointsController extends Controller
 	 * @throws EmptyParamGivenException
 	 * @throws Exception
 	 * 
+	 * @return Vesel[]
 	 */
 	private function getVeselRoutesFromDb(Request $request)
 	{

@@ -1,0 +1,5 @@
+﻿MMSI;STATUS;SPEED;LON;LAT;COURSE;HEADING;ROT;TIMESTAMP
+{% for vesel in vesels %}
+{%  for moveStatus in vesel.VeselMoveStatuses %}{{ vesel.Mmsi }};{{ moveStatus.Status }};{{ moveStatus.Speed }};{{ moveStatus.Logtitude }};{{ moveStatus.Latitude }};{{ moveStatus.Course }};{{ moveStatus.Rotation }};{{ moveStatus.Timestamp|date('Y-m-d H:i:s.u') }}
+{% endfor %}
+{% endfor %}

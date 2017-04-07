@@ -35,6 +35,7 @@ class VeselRouteRepository extends EntityRepository
 				->from('AppBundle:Vesel', 'v')
 				->innerJoin('v.veselMoveStatuses','m')
 				->select('v')
+				//->orderBy('v.mmsi','ASC')
 				->orderBy('m.timestamp','ASC');
 		
 		
@@ -45,6 +46,7 @@ class VeselRouteRepository extends EntityRepository
 // 		}
 		
 // 		if(!empty($mmsids)){
+// 			var_dump($mmsids);
 // 			$query->andWhere('v.mmsi IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
 // 		}
 		
