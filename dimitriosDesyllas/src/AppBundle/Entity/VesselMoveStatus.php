@@ -94,7 +94,7 @@ class VesselMoveStatus
 			->setCourse($course)
 			->setHeading($heading)
 			->setRotation($rotation)
-			->setTimesptamp($timestamp);
+			->setTimestamp($timestamp);
 	}
 	
     /**
@@ -184,7 +184,7 @@ class VesselMoveStatus
      */
     public function setLogtitude($logtitude)
     {
-        $this->logtitude = $logtitude;
+    	$this->logtitude = $this->sanitizeGpsCoordinate($logtitude);
 
         return $this;
     }
@@ -192,7 +192,7 @@ class VesselMoveStatus
     /**
      * Get logtitude
      *
-     * @return integer
+     * @return float
      */
     public function getLogtitude()
     {
@@ -208,7 +208,7 @@ class VesselMoveStatus
      */
     public function setLatitude($latitude)
     {
-        $this->latitude = $latitude;
+    	$this->latitude = $this->sanitizeGpsCoordinate($latitude);
 
         return $this;
     }
@@ -216,11 +216,12 @@ class VesselMoveStatus
     /**
      * Get latitude
      *
-     * @return integer
+     * @return float
      */
     public function getLatitude()
     {
-        return $this->latitude;
+    	$latitude=$this->latitude;
+    	return $latitude;
     }
 
     /**
@@ -340,5 +341,23 @@ class VesselMoveStatus
     public function getVesel()
     {
         return $this->vesel;
+    }
+    
+    /**
+     * Sometimes a GPS Coordinate may have the following format:
+     * 1,234532 if inserted as is then itn WONT be retreived correctly.
+     * Please use this method to sanitize the gps coordinate on setter method.
+     * 
+     * @param string | float $coordinate
+     * @return number
+     */
+    private function sanitizeGpsCoordinate($coordinate)
+    {
+    	if(is_string($coordinate))
+    	{
+    		$coordinate=str_replace(',','.',$coordinate);
+    	}
+    	
+    	return (float)$coordinate;
     }
 }

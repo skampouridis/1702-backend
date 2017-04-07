@@ -64,7 +64,7 @@ class DataInsertCsvCommand extends ContainerAwareCommand
 			$output->writeln("<error>Could not open the file.\n Please ensure that you given the correct path and have the correct read permissions.</error>");
 		} else {
 			$firstRowHasAlreadyBeenRead=false;
-			$output->writeln("<fg=cyan>Writing the data from CSV file into the databases</>");
+			$output->writeln("<fg=cyan>Writing the data from CSV file into the database</>");
 			$progress->start();
 			while(($data=fgetcsv($csvFile,0,";"))!==FALSE){
 				//First row does not contain any sort of usefull data therefore we ignore it completely.
