@@ -12,3 +12,16 @@ A simple API for retrieving ship routes.
 3. Run `php bin/console doctrine:schema:create` to create the schema.
 4. Run `php bin/console data:insert:csv ../ship_positions.csv` to import the data.
 
+#API Enpoint explanation
+
+## General
+
+## /routes.json 
+
+### Allowed Http methods
+Http `GET`
+
+### Input Parameters
+
+name | explanation
+--- | ---

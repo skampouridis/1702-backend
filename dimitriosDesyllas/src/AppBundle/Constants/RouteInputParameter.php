@@ -8,4 +8,6 @@ class RouteInputParameter
   const PARAM_LONGTITUDE_MAX='longtitude_max';
   const PARAM_LATITUDE_MIN='latitude_min';
   const PARAM_LATITUDE_MAX='latitude_max';
+  const PARAM_DATE_FROM='date_from';
+  const PARAM_DATE_TO='date_to';
 }

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Exception\EmptyParamGivenException;
 use AppBundle\Exception\ApiEndpointException;
 use AppBundle\Constants\RouteInputParameter;
+use AppBundle\Helpers\InputValidator;
 
 class VeselApiEndpointsController extends Controller
 {
@@ -112,9 +113,16 @@ class VeselApiEndpointsController extends Controller
 		$longtitudeMin=$request->get(RouteInputParameter::PARAM_LONGTITUDE_MIN);
 		$longtitudeMax=$request->get(RouteInputParameter::PARAM_LONGTITUDE_MAX);
 
+		$dateFrom=$request->get(RouteInputParameter::PARAM_DATE_FROM);
+		$dateTo=$request->get(RouteInputParameter::PARAM_DATE_TO);
+		
+		//Sanitizing Date Data
+		$dateFrom=InputValidator::dateInputValidateAndFormat($dateFrom,RouteInputParameter::PARAM_DATE_FROM);
+		$dateTo=InputValidator::dateInputValidateAndFormat($dateTo,RouteInputParameter::PARAM_DATE_TO);
+				
 		$repository=$this->get('vesel_repository');
 
-		$data=$repository->getRoutes($veselMMSID,$longtitudeMin,$longtitudeMax,$latitudeMin,$latitudeMax);
+		$data=$repository->getRoutes($veselMMSID,$longtitudeMin,$longtitudeMax,$latitudeMin,$latitudeMax,$dateFrom,$dateTo);
 		return $data;
 	}
 }

@@ -28,7 +28,8 @@ class VeselRouteRepository extends EntityRepository
 									$longtitudeMax=null,
 									$latitudeMin=null,
 									$latitudeMax=null,
-									\Datetime $timeInterval=null
+									\DateTime $fromDate=null,
+									\DateTime $toDate=null
 	) {
 		$em=$this->getEntityManager();
 
@@ -46,8 +47,8 @@ class VeselRouteRepository extends EntityRepository
 												RouteInputParameter::PARAM_LATITUDE_MAX=>$latitudeMax
 											];
 		if(InputValidator::allParamsEmptyOrNoEmptyCheck($paramsToValidate)){
-			$query->where("m.long BETWEEN :long_min AND :long_max")
-				->andWhere("m.lat BETWEEN :lat_min AND :lat_max")
+			$query->where("m.logtitude BETWEEN :long_min AND :long_max")
+				->andWhere("m.latitude BETWEEN :lat_min AND :lat_max")
 				->setParameters(['long_min'=>$longituteMin,'long_max'=>$longtitudeMax,'lat_min'=>$latitudeMin,'lat_max'=>$latitudeMax]);
 		}
 
@@ -55,6 +56,19 @@ class VeselRouteRepository extends EntityRepository
 			$query->andWhere('v.mmsi IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
 		}
 
+		$paramsToValidate=[RouteInputParameter::PARAM_DATE_FROM=>$fromDate,RouteInputParameter::PARAM_DATE_TO=>$toDate];
+		if(!empty($fromDate) && !empty($toDate)){
+			InputValidator::dateRangeValidation($paramsToValidate,RouteInputParameter::PARAM_DATE_FROM,RouteInputParameter::PARAM_DATE_TO);
+			$query->andWhere('m.timestamp BETWEEN :date_min AND :date_max')
+				->setParameters(['date_min'=>$fromDate,'date_max'=>$toDate]);
+		} else if(!empty($fromDate)) {
+			$query->andWhere('m.timestamp <= :date_min')
+				->setParameters(['date_min'=>$fromDate]);
+		} else if(!empty($toDate)) {
+			$query->where('m.timestamp >= :date_max')
+				->setParameters(['date_max'=>$toDate]);
+		}
+		
 		$query = $query->getQuery();
 		return $query->getResult();
 	}

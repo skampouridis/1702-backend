@@ -3,6 +3,8 @@
 namespace AppBundle\Helpers;
 
 use AppBundle\Exception\EmptyParamGivenException;
+use AppBundle\Exception\InvalidRangeException;
+use AppBundle\Exception\ParamHasInvalidFormatException;
 
 /**
 * Class that contains validation methods for input parameters
@@ -46,4 +48,38 @@ class InputValidator
 
 	}
 
+	/**
+	 * @param array $dateTimeParams
+	 * @param string $fromDateParamName
+	 * @param string $toDateParamName
+	 */
+	public static function dateRangeValidation(array $dateTimeParams,$fromDateParamName,$toDateParamName)
+	{	
+		$fromDate=$dateTimeParams[$fromDateParamName];
+		$toDate=$dateTimeParams[$toDateParamName];
+		if($fromDate->format('U')<$toDate->format('U')){
+			throw new InvalidRangeException($fromDateParamName, $toDateParamName);
+		}
+		
+	}
+	
+	/**
+	 * @param string $dateString
+	 * @return DateTime
+	 * @throws ParamHasInvalidFormatException
+	 */
+	public static function dateInputValidateAndFormat($dateString,$paramName)
+	{
+		$dateTime=null;
+		
+		if(!empty($dateString)){
+			try{			
+				$dateTime=\DateTime::createFromFormat('Y/m/d H:i', $dateString);			
+			} catch (Exception $e) {
+				throw new ParamHasInvalidFormatException($paramName, "date in Y/m/d H:i format");
+			}
+		}
+		
+		return $dateTime;
+	}
 }

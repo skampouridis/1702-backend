@@ -39,6 +39,7 @@ class ApiEndpointException extends \Exception implements HttpExceptionInterface
 		
 		$this->statusCode=$statusCode;
 		$this->headers=$headers;
+		$this->dataFormat=$dataFormat;
 	}
 	
 	/**
@@ -55,6 +56,14 @@ class ApiEndpointException extends \Exception implements HttpExceptionInterface
 	 */
 	public function getHeaders() {
 		return $this->headers;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getDataFormat()
+	{
+		return $this->dataFormat;
 	}
 
 }
