@@ -106,6 +106,8 @@ class VeselApiEndpointsController extends Controller
 
 		if(is_string($veselMMSID)){
 			$veselMMSID=explode(";",$veselMMSID);
+		} else {
+			$veselMMSID=[];
 		}
 
 		$latitudeMin=$request->get(RouteInputParameter::PARAM_LATITUDE_MIN);
@@ -115,11 +117,11 @@ class VeselApiEndpointsController extends Controller
 
 		$dateFrom=$request->get(RouteInputParameter::PARAM_DATE_FROM);
 		$dateTo=$request->get(RouteInputParameter::PARAM_DATE_TO);
-		
+
 		//Sanitizing Date Data
 		$dateFrom=InputValidator::dateInputValidateAndFormat($dateFrom,RouteInputParameter::PARAM_DATE_FROM);
 		$dateTo=InputValidator::dateInputValidateAndFormat($dateTo,RouteInputParameter::PARAM_DATE_TO);
-				
+
 		$repository=$this->get('vesel_repository');
 
 		$data=$repository->getRoutes($veselMMSID,$longtitudeMin,$longtitudeMax,$latitudeMin,$latitudeMax,$dateFrom,$dateTo);
