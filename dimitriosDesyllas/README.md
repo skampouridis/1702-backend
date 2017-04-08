@@ -51,7 +51,7 @@ Http Code | Cases
 405 | When you try to access the endpoint in any other method that the endpoint does not support
 404 | When to data have been fetched
 
-### <a id="input_parameters"></a>Input Parameters
+### <a id="input_parameters31232132132132131"></a>Input Parameters
 
 All api Endpoints support the following parameters.
 
@@ -77,7 +77,7 @@ Http `GET` and http `HEAD` (reiminder http `HEAD` does not return the content)
 
 #### Input Parameters
 
-The parameters are the same as provided in [parameters]("#input_parameters").
+The parameters are the same as provided in [parameters]("#input_parameters31232132132132131").
 
 ### /routes.csv 
 Retreives the vessel routes formated as csv.
@@ -87,7 +87,7 @@ Http `GET` and http `HEAD` (reiminder http `HEAD` does not return the content)
 
 #### Input Parameters
 
-The parameters are the same as provided in [parameters]("#input_parameters").
+The parameters are the same as provided in [parameters]("#input_parameters31232132132132131").
 
  ### /routes.json 
 Retreives the vessel routes formated as json
@@ -97,5 +97,5 @@ Http `GET` and http `HEAD` (reiminder http `HEAD` does not return the content)
 
 #### Input Parameters
 
-The parameters are the same as provided in [parameters]("#input_parameters").
+The parameters are the same as provided in [parameters]("#input_parameters31232132132132131").
  
