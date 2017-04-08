@@ -99,16 +99,18 @@ class InputValidator
 	public static function httpRequestShouldHaveSpecificParametersWhenGiven(Request $request,array $parametersThatHttpRequestShouldHave)
 	{
 		$parametersToValidate=$request->query->all();
-		
+
 		if(empty($parametersToValidate)){
 			return;
 		}
 		
-		$parameters=array_keys($parametersToValidate);
+		$parametersToValidate=array_keys($parametersToValidate);
+
+		$extraParameters=array_diff($parametersToValidate,$parametersThatHttpRequestShouldHave);
 		
-		foreach($parametersThatHttpRequestShouldHave as $param){
-			if(!in_array($parameters,$parametersThatHttpRequestShouldHave)){			
-				throw new InvalidNumberOfParametersException(implode(',',$parametersToValidate),implode(',',$parametersThatHttpRequestShouldHave));
+		foreach($extraParameters as $param){
+			if(!in_array($param,$parametersThatHttpRequestShouldHave)){			
+				throw new InvalidNumberOfParametersException(implode(',',$parametersToValidate),implode(',',$parametersThatHttpRequestShouldHave),$param,"");
 			}
 		}
 	}
