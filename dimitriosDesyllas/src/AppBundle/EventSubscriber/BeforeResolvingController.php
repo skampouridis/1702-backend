@@ -3,8 +3,8 @@ namespace AppBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Monolog\Logger;
 
 class BeforeResolvingController implements EventSubscriberInterface
 {
@@ -13,9 +13,15 @@ class BeforeResolvingController implements EventSubscriberInterface
 	 */
 	private $env;
 
-	public function __construct($env)
+	/**
+	 * @var Logger
+	 */
+	private $log;
+
+	public function __construct($env, Logger $log)
 	{
 		$this->env = $env;
+		$this->log = $log;
 	}
 
 	public static function getSubscribedEvents()
@@ -23,7 +29,8 @@ class BeforeResolvingController implements EventSubscriberInterface
 		// return the subscribed events, their methods and priorities
 		return array(
 				KernelEvents::REQUEST => array(
-						array('removeXdebugParametersWhenDev', 0),
+						array('removeXdebugParametersWhenDev', 5),
+						array('logVisit',0)
 				)
 		);
 	}
@@ -37,12 +44,14 @@ class BeforeResolvingController implements EventSubscriberInterface
 			 */
 			$request= $event->getRequest();
 			$request->query->remove('XDEBUG_SESSION_START');
-			$request->query->remove('XDEBUG_SESSION_STOP');	
+			$request->query->remove('XDEBUG_SESSION_STOP');
 		}
 	}
 
-	public function logVisit()
+	public function logVisit(GetResponseEvent $event)
 	{
-
+		$request= $event->getRequest();
+		$urlInfo=sprintf("%s %s: %s %s",$request->server->get("REMOTE_ADDR"),$request->getMethod() , $request->server->get('SERVER_PROTOCOL'), $request->getRequestUri());
+		$this->log->info($urlInfo);
 	}
 }

@@ -20,6 +20,7 @@ services:
    
  app.request_subscriber:
     class: AppBundle\EventSubscriber\BeforeResolvingController
-    arguments: ["%kernel.environment%"]
+    arguments: ["%kernel.environment%","@logger"]
     tags:
       - { name: kernel.event_subscriber }
+      - { name: monolog.logger, channel: visit } 
