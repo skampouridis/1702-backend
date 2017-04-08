@@ -37,8 +37,10 @@ class VeselRouteRepository extends EntityRepository
 				->from('AppBundle:Vesel', 'v')
 				->innerJoin('v.veselMoveStatuses','m')
 				->select('v.mmsi,m.logtitude,m.latitude,m.timestamp')
+				//->select('v,m')
 				->addOrderBy('v.mmsi','ASC')
 				->addOrderBy('m.timestamp','DESC');
+
 
 		if(!empty($longituteMin)){
 			$query->andWhere('m.logtitude >= :long_min')->setParameter(':long_min',$longituteMin);
@@ -74,7 +76,6 @@ class VeselRouteRepository extends EntityRepository
 		}
 
 		$query = $query->getQuery();
-		$dql=$query->getDql();
 		return $query->getResult();
 	}
 }
