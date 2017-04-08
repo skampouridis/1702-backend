@@ -77,7 +77,7 @@ Http `GET` and http `HEAD` (reiminder http `HEAD` does not return the content)
 
 #### Input Parameters
 
-The parameters are the same as provided in [parameters]("#input_parameters31232132132132131").
+The parameters are the same as provided in [parameters](#input_parameters31232132132132131).
 
 ### /routes.csv 
 Retreives the vessel routes formated as csv.
@@ -87,7 +87,7 @@ Http `GET` and http `HEAD` (reiminder http `HEAD` does not return the content)
 
 #### Input Parameters
 
-The parameters are the same as provided in [parameters]("#input_parameters31232132132132131").
+The parameters are the same as provided in [parameters](#input_parameters31232132132132131).
 
  ### /routes.json 
 Retreives the vessel routes formated as json
@@ -97,5 +97,5 @@ Http `GET` and http `HEAD` (reiminder http `HEAD` does not return the content)
 
 #### Input Parameters
 
-The parameters are the same as provided in [parameters]("#input_parameters31232132132132131").
+The parameters are the same as provided in [parameters](#input_parameters31232132132132131).
  
