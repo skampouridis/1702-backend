@@ -4,6 +4,7 @@ namespace AppBundle\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\Response;
 use Monolog\Logger;
 
 class BeforeResolvingController implements EventSubscriberInterface
@@ -30,8 +31,9 @@ class BeforeResolvingController implements EventSubscriberInterface
 		return array(
 				KernelEvents::REQUEST => array(
 						array('removeXdebugParametersWhenDev', 5),
-						array('logVisit',0)
-				)
+						array('logVisit',4),
+						array('limitVisitor',0)
+				),
 		);
 	}
 
@@ -54,4 +56,11 @@ class BeforeResolvingController implements EventSubscriberInterface
 		$urlInfo=sprintf("%s %s: %s %s",$request->server->get("REMOTE_ADDR"),$request->getMethod() , $request->server->get('SERVER_PROTOCOL'), $request->getRequestUri());
 		$this->log->info($urlInfo);
 	}
+
+	public function limitVisitor(GetResponseEvent $e)
+	{
+// 		$response=$e->getResponse();
+// 		$response->setContent("Hello");
+	}
+
 }

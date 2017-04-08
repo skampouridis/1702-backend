@@ -4,6 +4,7 @@ namespace AppBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Exception\ApiEndpointException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class ExceptionListener
 {
@@ -26,6 +27,7 @@ class ExceptionListener
         );
         
         if($this->env=='dev'){
+        	$message['exception_class']= get_class($exception);
         	$message['code']=$exception->getCode();
         	$message['stacktrace']=$exception->getTrace();
         }
@@ -38,7 +40,9 @@ class ExceptionListener
  		if ($exception instanceof ApiEndpointException) {        	
             $response->setStatusCode($exception->getStatusCode());
             $response->headers->replace($exception->getHeaders());
- 		} else {
+ 		} else if($exception instanceof MethodNotAllowedHttpException){
+ 			$response->setStatusCode(Response::HTTP_METHOD_NOT_ALLOWED);
+    	} else {
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);            
         }
 
