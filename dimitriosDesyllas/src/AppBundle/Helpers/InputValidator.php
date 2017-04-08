@@ -5,6 +5,8 @@ namespace AppBundle\Helpers;
 use AppBundle\Exception\EmptyParamGivenException;
 use AppBundle\Exception\InvalidRangeException;
 use AppBundle\Exception\ParamHasInvalidFormatException;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Exception\InvalidNumberOfParametersException;
 
 /**
 * Class that contains validation methods for input parameters
@@ -81,5 +83,33 @@ class InputValidator
 		}
 		
 		return $dateTime;
+	}
+	
+	/**
+	 * LOOK WHEN REFACTOR:
+	 * If this method needs to be refactored then try moving this method to another class
+	 * 
+	 * NOTE:
+	 * This method DOES NOT look for MISSING parameters but for EXTRA ones.
+	 * 
+	 * @param Request $request
+	 * @param array $parametersThatHttpRequestShouldHave
+	 * @throws InvalidNumberOfParametersException
+	 */
+	public static function httpRequestShouldHaveSpecificParametersWhenGiven(Request $request,array $parametersThatHttpRequestShouldHave)
+	{
+		$parametersToValidate=$request->query->all();
+		
+		if(empty($parametersToValidate)){
+			return;
+		}
+		
+		$parameters=array_keys($parametersToValidate);
+		
+		foreach($parametersThatHttpRequestShouldHave as $param){
+			if(!in_array($parameters,$parametersThatHttpRequestShouldHave)){			
+				throw new InvalidNumberOfParametersException(implode(',',$parametersToValidate),implode(',',$parametersThatHttpRequestShouldHave));
+			}
+		}
 	}
 }

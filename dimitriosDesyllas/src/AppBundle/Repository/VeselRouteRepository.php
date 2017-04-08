@@ -19,6 +19,7 @@ class VeselRouteRepository extends EntityRepository
 	 * @param \Datetime $timeInterval
 	 *
 	 * @throws EmptyParamGivenException
+	 * @throws InvalidRangeException
 	 * @throws Exception
 	 *
 	 * @return Vesel[] with their routes

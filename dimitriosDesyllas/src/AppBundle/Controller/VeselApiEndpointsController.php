@@ -11,6 +11,8 @@ use AppBundle\Exception\EmptyParamGivenException;
 use AppBundle\Exception\ApiEndpointException;
 use AppBundle\Constants\RouteInputParameter;
 use AppBundle\Helpers\InputValidator;
+use AppBundle\Exception\InvalidRangeException;
+use AppBundle\Exception\InvalidNumberOfParametersException;
 
 class VeselApiEndpointsController extends Controller
 {
@@ -79,6 +81,10 @@ class VeselApiEndpointsController extends Controller
 			}
 		} catch(EmptyParamGivenException $ep) {
 			throw new ApiEndpointException($ep->getMessage(),$response->headers->all(),Response::HTTP_BAD_REQUEST,$whatToSerialize);
+		} catch(InvalidRangeException $re){
+			throw new ApiEndpointException($re->getMessage(),$response->headers->all(),Response::HTTP_BAD_REQUEST,$whatToSerialize);
+		} catch(InvalidNumberOfParametersException $npe) {
+			throw new ApiEndpointException($npe->getMessage(),$response->headers->all(),Response::HTTP_BAD_REQUEST,$whatToSerialize);
 		} catch(\Exception $e) {
 			throw new ApiEndpointException($e->getMessage(),$response->headers->all(),Response::HTTP_INTERNAL_SERVER_ERROR,$whatToSerialize);
 		}
@@ -95,13 +101,18 @@ class VeselApiEndpointsController extends Controller
 	 * because I wanted to have more clean code and reusable one.
 	 *
 	 * @return void
+	 * 
 	 * @throws EmptyParamGivenException
+	 * @throws InvalidNumberOfParametersException
+	 * @throws InvalidRangeException
 	 * @throws Exception
-	 *
+	 * 
 	 * @return Vesel[]
 	 */
 	private function getVeselRoutesFromDb(Request $request)
 	{
+		InputValidator::httpRequestShouldHaveSpecificParametersWhenGiven($request, RouteInputParameter::ROUTE_ROUTES_GET_HTTP_PARAMS_THAT_MUST_HAVE);
+		
 		$veselMMSID=$request->get(RouteInputParameter::PARAM_MMSI);
 
 		if(is_string($veselMMSID)){
