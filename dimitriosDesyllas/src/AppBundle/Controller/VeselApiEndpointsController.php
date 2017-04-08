@@ -13,6 +13,7 @@ use AppBundle\Constants\RouteInputParameter;
 use AppBundle\Helpers\InputValidator;
 use AppBundle\Exception\InvalidRangeException;
 use AppBundle\Exception\InvalidNumberOfParametersException;
+use AppBundle\Exception\NoDataReturendException;
 
 class VeselApiEndpointsController extends Controller
 {
@@ -85,6 +86,8 @@ class VeselApiEndpointsController extends Controller
 			throw new ApiEndpointException($re->getMessage(),$response->headers->all(),Response::HTTP_BAD_REQUEST,$whatToSerialize);
 		} catch(InvalidNumberOfParametersException $npe) {
 			throw new ApiEndpointException($npe->getMessage(),$response->headers->all(),Response::HTTP_BAD_REQUEST,$whatToSerialize);
+		} catch (NoDataReturendException $nde) {
+			throw new ApiEndpointException($nde->getMessage(),$response->headers->all(),Response::HTTP_NOT_FOUND,$whatToSerialize);
 		} catch(\Exception $e) {
 			throw new ApiEndpointException($e->getMessage(),$response->headers->all(),Response::HTTP_INTERNAL_SERVER_ERROR,$whatToSerialize);
 		}
@@ -136,6 +139,11 @@ class VeselApiEndpointsController extends Controller
 		$repository=$this->get('vesel_repository');
 
 		$data=$repository->getRoutes($veselMMSID,$longtitudeMin,$longtitudeMax,$latitudeMin,$latitudeMax,$dateFrom,$dateTo);
+		
+		if(empty($data)){
+			throw new NoDataReturendException();
+		}
+		
 		return $data;
 	}
 }
