@@ -36,7 +36,7 @@ cd ^folder_to_the_application^
 php ./bin/console server:run
 ```
 
-#API Enpoint explanation
+# API Enpoint explanation
 
 ## General
 
