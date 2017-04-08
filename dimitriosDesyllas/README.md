@@ -19,6 +19,8 @@ In order to run you must have installed `php-sqlite` and `php-redis` php modules
 
 On `app/config/parameters.yml.dist` set the value `redis_dns` with the url of your redis server. The value must have the `redis://^redis_url^` format where `^redis_url^` is the url or the ip or the redis server.
 
+Afterwards run `composer install` to install the dependencies.
+
 ## 3. Generating Database and Schema
 
 1. Create the `./var/db` folder with `777` UNIX permissions.
