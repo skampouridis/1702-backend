@@ -7,6 +7,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Monolog\Logger;
 use AppBundle\Services\AllowIpToCallEndpoint;
+use AppBundle\Exception\ApiEndpointException;
+
 class BeforeResolvingController implements EventSubscriberInterface
 {
 	/**
@@ -18,7 +20,7 @@ class BeforeResolvingController implements EventSubscriberInterface
 	 * @var Logger
 	 */
 	private $log;
-	
+
 	/**
 	 * @var AllowIpToCallEndpoint
 	 */
@@ -46,7 +48,7 @@ class BeforeResolvingController implements EventSubscriberInterface
 	public function removeXdebugParametersWhenDev(GetResponseEvent $event)
 	{
 		/**
-		 * Because on our endpoints we have check for extra parameters we do not want any XDEBUG related param 
+		 * Because on our endpoints we have check for extra parameters we do not want any XDEBUG related param
 		 * to conflict with our checks.
 		 */
 		if($this->env=='dev'){
@@ -71,9 +73,7 @@ class BeforeResolvingController implements EventSubscriberInterface
 		$request=$event->getRequest();
 		$ip=$request->server->get("REMOTE_ADDR");
 		if(!$this->allowIpPolicy->applyPolicy($ip)) {
-			$response=new Response(json_encode(['message'=>"You can only have 10 requests per hour from this ip"]),Response::HTTP_TOO_MANY_REQUESTS);
-			$response->headers->set('Content-Type','application/json');
-			$event->setResponse($response);
+			throw new ApiEndpointException("You can only have 10 requests per hour from this ip", [], Response::HTTP_TOO_MANY_REQUESTS,'json');
 		}
 	}
 

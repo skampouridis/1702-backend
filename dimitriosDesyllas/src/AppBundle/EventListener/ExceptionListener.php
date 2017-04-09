@@ -39,7 +39,10 @@ class ExceptionListener
         // holds status code and header details
  		if ($exception instanceof ApiEndpointException) {        	
             $response->setStatusCode($exception->getStatusCode());
-            $response->headers->replace($exception->getHeaders());
+            $headers=$exception->getHeaders();
+            if(!empty($headers)){            	
+            	$response->headers->replace();
+            }
  		} else if($exception instanceof MethodNotAllowedHttpException){
  			$response->setStatusCode(Response::HTTP_METHOD_NOT_ALLOWED);
     	} else {
