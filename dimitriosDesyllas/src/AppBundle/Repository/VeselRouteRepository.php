@@ -42,38 +42,48 @@ class VeselRouteRepository extends EntityRepository
 				->addOrderBy('v.mmsi','ASC')
 				->addOrderBy('m.timestamp','DESC');
 
-
+		$paramsToSet=[];
 		if(!empty($longituteMin)){
-			$query->andWhere('m.logtitude >= :long_min')->setParameter(':long_min',$longituteMin);
+			$query->andWhere('m.logtitude >= :long_min');
+			$paramsToSet["long_min"]=$longituteMin;
 		}
 
 		if(!empty($longtitudeMax)) {
-			$query->andWhere('m.logtitude <= :long_max')->setParameter(':long_max',$longituteMax);
+			$query->andWhere('m.logtitude <= :long_max');
+			$paramsToSet["long_max"]=$longtitudeMax;
 		}
 
 		if(!empty($latitudeMin)){
-						$query->andWhere('m.latitude >= :lat_min')->setParameter(':lat_min',$latitudeMin);
+			$query->andWhere('m.latitude >= :lat_min');//->setParameter(':lat_min',$latitudeMin);
+			$paramsToSet["lat_min"]=$latitudeMin;
 		}
 
 		if(!empty($latitudeMax)){
-						$query->andWhere('m.latitude <= :lat_max')->setParameter(':lat_max',$latitudeMin);
+			$query->andWhere('m.latitude <= :lat_max');//->setParameter(':lat_max',$latitudeMax);
+			$paramsToSet["lat_max"]=$latitudeMax;
 		}
 
 		if(!empty($mmsids)){
-			$query->andWhere('v.mmsi IN (:mmsids)')->setParameter('mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+			$query->andWhere('v.mmsi IN (:mmsids)');//->setParameter(':mmsids', $mmsids,\Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+			$paramsToSet['mmsids']=implode(',',$mmsids);
 		}
 
 		$paramsToValidate=[RouteInputParameter::PARAM_DATE_FROM=>$fromDate,RouteInputParameter::PARAM_DATE_TO=>$toDate];
 		if($fromDate!==null && $toDate!==null){
 			InputValidator::dateRangeValidation($paramsToValidate,RouteInputParameter::PARAM_DATE_FROM,RouteInputParameter::PARAM_DATE_TO);
-			$query->andWhere('m.timestamp BETWEEN :date_min AND :date_max')
-				->setParameters(['date_min'=>$fromDate,'date_max'=>$toDate]);
+			$query->andWhere('m.timestamp BETWEEN :date_min AND :date_max');
+				$paramsToSet['date_min']=$fromDate;
+				$paramsToSet['date_max']=$toDate;
 		} else if($fromDate!==null) {
-			$query->andWhere('m.timestamp <= :date_min')
-				->setParameters(['date_min'=>$fromDate]);
+			$query->andWhere('m.timestamp <= :date_min');
+				$paramsToSet['date_min']=$fromDate;
 		} else if($toDate!==null) {
-			$query->where('m.timestamp >= :date_max')
-				->setParameters(['date_max'=>$toDate]);
+			$query->where('m.timestamp >= :date_max');
+			$paramsToSet['date_max']=$toDate;
+		}
+
+		if(!empty($paramsToSet)){
+			$query->setParameters($paramsToSet);
 		}
 
 		$query = $query->getQuery();

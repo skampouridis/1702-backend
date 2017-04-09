@@ -40,7 +40,7 @@ class BeforeResolvingController implements EventSubscriberInterface
 				KernelEvents::REQUEST => array(
 						array('removeXdebugParametersWhenDev', 5),
 						array('logVisit',4),
-						array('limitVisitor',0)
+						//array('limitVisitor',0)
 				),
 		);
 	}

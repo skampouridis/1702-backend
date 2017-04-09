@@ -59,7 +59,7 @@ class InputValidator
 	{
 		$fromDate=$dateTimeParams[$fromDateParamName];
 		$toDate=$dateTimeParams[$toDateParamName];
-		if($fromDate->format('U')<$toDate->format('U')){
+		if($fromDate->format('U')>$toDate->format('U')){
 			throw new InvalidRangeException($fromDateParamName, $toDateParamName);
 		}
 
