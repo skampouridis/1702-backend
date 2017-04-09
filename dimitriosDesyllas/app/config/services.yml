@@ -20,7 +20,11 @@ services:
    
  app.request_subscriber:
     class: AppBundle\EventSubscriber\BeforeResolvingController
-    arguments: ["%kernel.environment%","@logger"]
+    arguments: ["%kernel.environment%","@logger","@allowipservice"]
     tags:
       - { name: kernel.event_subscriber }
       - { name: monolog.logger, channel: visit } 
+      
+ allowipservice:
+  class: AppBundle\Services\AllowIpToCallEndpoint
+  arguments: ["@snc_redis.default"]

@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Monolog\Logger;
-
+use AppBundle\Services\AllowIpToCallEndpoint;
 class BeforeResolvingController implements EventSubscriberInterface
 {
 	/**
@@ -18,11 +18,17 @@ class BeforeResolvingController implements EventSubscriberInterface
 	 * @var Logger
 	 */
 	private $log;
+	
+	/**
+	 * @var AllowIpToCallEndpoint
+	 */
+	private $allowIpPolicy;
 
-	public function __construct($env, Logger $log)
+	public function __construct($env, Logger $log,AllowIpToCallEndpoint $allowIpPolicy)
 	{
 		$this->env = $env;
 		$this->log = $log;
+		$this->allowIpPolicy=$allowIpPolicy;
 	}
 
 	public static function getSubscribedEvents()
@@ -39,7 +45,10 @@ class BeforeResolvingController implements EventSubscriberInterface
 
 	public function removeXdebugParametersWhenDev(GetResponseEvent $event)
 	{
-		//When dev we do not want any Sort of url parameters that satart with XDEBUG
+		/**
+		 * Because on our endpoints we have check for extra parameters we do not want any XDEBUG related param 
+		 * to conflict with our checks.
+		 */
 		if($this->env=='dev'){
 			/**
 			 * @var Symfony\Component\HttpFoundation\Request
@@ -57,10 +66,15 @@ class BeforeResolvingController implements EventSubscriberInterface
 		$this->log->info($urlInfo);
 	}
 
-	public function limitVisitor(GetResponseEvent $e)
+	public function limitVisitor(GetResponseEvent $event)
 	{
-// 		$response=$e->getResponse();
-// 		$response->setContent("Hello");
+		$request=$event->getRequest();
+		$ip=$request->server->get("REMOTE_ADDR");
+		if(!$this->allowIpPolicy->applyPolicy($ip)) {
+			$response=new Response(json_encode(['message'=>"You can only have 10 requests per hour from this ip"]),Response::HTTP_TOO_MANY_REQUESTS);
+			$response->headers->set('Content-Type','application/json');
+			$event->setResponse($response);
+		}
 	}
 
 }
