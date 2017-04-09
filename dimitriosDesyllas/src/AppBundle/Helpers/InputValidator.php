@@ -54,6 +54,7 @@ class InputValidator
 	 * @param array $dateTimeParams
 	 * @param string $fromDateParamName
 	 * @param string $toDateParamName
+	 * @throws InvalidRangeException
 	 */
 	public static function dateRangeValidation(array $dateTimeParams,$fromDateParamName,$toDateParamName)
 	{
@@ -62,7 +63,22 @@ class InputValidator
 		if($fromDate->format('U')>$toDate->format('U')){
 			throw new InvalidRangeException($fromDateParamName, $toDateParamName);
 		}
+	}
 
+	/**
+	 * @param array $dateTimeParams
+	 * @param string $fromDateParamName
+	 * @param string $toDateParamName
+	 * @throws InvalidRangeException
+	 */
+	public static function compareNumericRange(array $params, $paramSmallerNumber,$paramBiggerNumber)
+	{
+		$numberSmaller=(float)$params[$paramSmallerNumber];
+		$numberBiger=(float)$params[$paramBiggerNumber];
+
+		if($numberSmaller>$numberBiger){
+			throw new InvalidRangeException($paramSmallerNumber,$paramBiggerNumber);
+		}
 	}
 
 	/**

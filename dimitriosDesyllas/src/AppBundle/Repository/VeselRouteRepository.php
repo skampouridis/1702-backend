@@ -43,24 +43,35 @@ class VeselRouteRepository extends EntityRepository
 				->addOrderBy('m.timestamp','DESC');
 
 		$paramsToSet=[];
-		if(!empty($longituteMin)){
+
+		if(!empty($longituteMin) && !empty($longtitudeMax)) {
+			$paramsToValidate=[RouteInputParameter::PARAM_LONGTITUDE_MIN=>$longituteMin,RouteInputParameter::PARAM_LONGTITUDE_MAX=>$longtitudeMax];
+			InputValidator::compareNumericRange($paramsToValidate,RouteInputParameter::PARAM_LONGTITUDE_MIN,RouteInputParameter::PARAM_LONGTITUDE_MAX);
+			$query->andWhere('m.logtitude BETWEEN :long_min AND :long_max');
+			$paramsToSet["long_min"]=$longituteMin;
+			$paramsToSet["long_max"]=$longtitudeMax;
+	  } else if(!empty($longituteMin)) {
 			$query->andWhere('m.logtitude >= :long_min');
 			$paramsToSet["long_min"]=$longituteMin;
-		}
-
-		if(!empty($longtitudeMax)) {
+		} elseif(!empty($longtitudeMax)) {
 			$query->andWhere('m.logtitude <= :long_max');
 			$paramsToSet["long_max"]=$longtitudeMax;
 		}
 
-		if(!empty($latitudeMin)){
-			$query->andWhere('m.latitude >= :lat_min');//->setParameter(':lat_min',$latitudeMin);
-			$paramsToSet["lat_min"]=$latitudeMin;
-		}
 
-		if(!empty($latitudeMax)){
+
+		if(!empty($latitudeMax) && !empty($latitudeMin)){
+			$paramsToValidate=[RouteInputParameter::PARAM_LATITUDE_MIN=>$latitudeMin,RouteInputParameter::PARAM_LATITUDE_MAX=>$latitudeMax];
+			InputValidator::compareNumericRange($paramsToValidate,RouteInputParameter::PARAM_LATITUDE_MIN,RouteInputParameter::PARAM_LATITUDE_MAX);
+			$query->andWhere('m.latitude BETWEEN :lat_min AND :lat_max');
+			$paramsToSet["lat_min"]=$latitudeMin;
+			$paramsToSet["lat_max"]=$latitudeMax;
+		}elseif(!empty($latitudeMax)){
 			$query->andWhere('m.latitude <= :lat_max');//->setParameter(':lat_max',$latitudeMax);
 			$paramsToSet["lat_max"]=$latitudeMax;
+		} elseif(!empty($latitudeMin)) {
+				$query->andWhere('m.latitude >= :lat_min');//->setParameter(':lat_min',$latitudeMin);
+				$paramsToSet["lat_min"]=$latitudeMin;
 		}
 
 		if(!empty($mmsids)){
