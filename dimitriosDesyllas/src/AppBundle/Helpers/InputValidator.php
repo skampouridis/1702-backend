@@ -56,15 +56,15 @@ class InputValidator
 	 * @param string $toDateParamName
 	 */
 	public static function dateRangeValidation(array $dateTimeParams,$fromDateParamName,$toDateParamName)
-	{	
+	{
 		$fromDate=$dateTimeParams[$fromDateParamName];
 		$toDate=$dateTimeParams[$toDateParamName];
 		if($fromDate->format('U')<$toDate->format('U')){
 			throw new InvalidRangeException($fromDateParamName, $toDateParamName);
 		}
-		
+
 	}
-	
+
 	/**
 	 * @param string $dateString
 	 * @return DateTime
@@ -73,25 +73,26 @@ class InputValidator
 	public static function dateInputValidateAndFormat($dateString,$paramName)
 	{
 		$dateTime=null;
-		
+
 		if(!empty($dateString)){
-			try{			
-				$dateTime=\DateTime::createFromFormat('Y/m/d H:i', $dateString);			
+			try{
+				$dateString=str_replace('/','-',$dateString);
+				$dateTime=\DateTime::createFromFormat('Y-m-d H:i', $dateString);
 			} catch (Exception $e) {
 				throw new ParamHasInvalidFormatException($paramName, "date in Y/m/d H:i format");
 			}
 		}
-		
+
 		return $dateTime;
 	}
-	
+
 	/**
 	 * LOOK WHEN REFACTOR:
 	 * If this method needs to be refactored then try moving this method to another class
-	 * 
+	 *
 	 * NOTE:
 	 * This method DOES NOT look for MISSING parameters but for EXTRA ones.
-	 * 
+	 *
 	 * @param Request $request
 	 * @param array $parametersThatHttpRequestShouldHave
 	 * @throws InvalidNumberOfParametersException
@@ -103,13 +104,13 @@ class InputValidator
 		if(empty($parametersToValidate)){
 			return;
 		}
-		
+
 		$parametersToValidate=array_keys($parametersToValidate);
 
 		$extraParameters=array_diff($parametersToValidate,$parametersThatHttpRequestShouldHave);
-		
+
 		foreach($extraParameters as $param){
-			if(!in_array($param,$parametersThatHttpRequestShouldHave)){			
+			if(!in_array($param,$parametersThatHttpRequestShouldHave)){
 				throw new InvalidNumberOfParametersException(implode(',',$parametersToValidate),implode(',',$parametersThatHttpRequestShouldHave),$param,"");
 			}
 		}
