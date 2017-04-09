@@ -75,10 +75,10 @@ class VeselRouteRepository extends EntityRepository
 				$paramsToSet['date_min']=$fromDate;
 				$paramsToSet['date_max']=$toDate;
 		} else if($fromDate!==null) {
-			$query->andWhere('m.timestamp <= :date_min');
+			$query->andWhere('m.timestamp >= :date_min');
 				$paramsToSet['date_min']=$fromDate;
 		} else if($toDate!==null) {
-			$query->where('m.timestamp >= :date_max');
+			$query->andWhere('m.timestamp <= :date_max');
 			$paramsToSet['date_max']=$toDate;
 		}
 
