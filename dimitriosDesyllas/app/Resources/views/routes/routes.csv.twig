@@ -1,4 +1,0 @@
-﻿MMSI;LONGTITUDE;LATITUDE;TIMESTAMP
-{% for route in routes %}
-{{ route.mmsi }};{{ route.logtitude }};{{ route.latitude }};{{ route.timestamp|date('Y-m-d H:i:s.u') }}
-{% endfor %}
