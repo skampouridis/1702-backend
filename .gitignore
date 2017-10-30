@@ -1,1 +1,5 @@
-.~lock.ship_positions.csv#
+/vendor
+/.idea
+Homestead.json
+Homestead.yaml
+.env
