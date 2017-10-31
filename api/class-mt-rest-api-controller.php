@@ -25,7 +25,7 @@ class MT_REST_API_Controller {
 	 * from a given client IP.
 	 * @var integer
 	 */
-	protected $request_limit_per_hour = 100;
+	protected $request_limit_per_hour = 10;
 
 	/**
 	 * Holds the retrieve data, prior to sending it as part of the response.
