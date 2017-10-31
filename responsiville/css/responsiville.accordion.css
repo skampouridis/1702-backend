@@ -1,0 +1,52 @@
+/******************************************************************************
+
+     █████╗  ██████╗ ██████╗ ██████╗ ██████╗ ██████╗ ██╗ ██████╗ ███╗   ██╗
+    ██╔══██╗██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔══██╗██║██╔═══██╗████╗  ██║
+    ███████║██║     ██║     ██║   ██║██████╔╝██║  ██║██║██║   ██║██╔██╗ ██║
+    ██╔══██║██║     ██║     ██║   ██║██╔══██╗██║  ██║██║██║   ██║██║╚██╗██║
+    ██║  ██║╚██████╗╚██████╗╚██████╔╝██║  ██║██████╔╝██║╚██████╔╝██║ ╚████║
+    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+
+ ******************************************************************************/
+
+
+
+    .responsiville-accordion {
+    }
+
+    .responsiville-accordion-enabled {
+    }
+
+        .responsiville-accordion-panel {
+        }
+
+        .responsiville-accordion-panel-open {
+        }
+
+            .responsiville-accordion-header {
+                cursor: hand;
+                cursor: pointer;
+                position: relative;
+            }
+
+                .responsiville-accordion-header::after {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    font-family: 'Responsiville icons';
+                    content: '\e816';
+                    transform: rotateZ(90deg);
+                }
+                .responsiville-accordion-panel-open .responsiville-accordion-header::after {
+                    transform: rotateZ(270deg);
+                }
+
+            .responsiville-accordion-excerpt {
+            }
+
+            .responsiville-accordion-content {
+                display: none;
+            }
+
+            .responsiville-accordion-footer {
+            }

@@ -1,0 +1,38 @@
+.sidebar,
+.site-content {
+	margin-top: var(--vertical-rhythm);
+}
+
+a,
+a:hover,
+a:focus {
+	color: #374D9B;
+	border-bottom: 1px dotted currentcolor;
+}
+
+.sidebar {
+	position: fixed;
+	left: 0;
+	top: 0;
+	height: 100%;
+}
+
+.sidebar h2 {
+	margin-bottom: var(--text-rhythm);
+}
+
+code {
+	background: #ddd;
+}
+
+.navigation a {
+	border: none;
+}
+.navigation ul ul {
+	margin-left: 1em;
+}
+
+.footer-credits {
+	text-align: center;
+	font-size: 12px;
+}

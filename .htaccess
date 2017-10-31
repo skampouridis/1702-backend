@@ -1,0 +1,13 @@
+# Disallow directory listing
+Options -Indexes
+
+# Make sure UTF-8 encoding is default
+AddDefaultCharset utf-8
+
+# Rewrite all /api/* URIs to be handled by the API script
+<IfModule mod_rewrite.c>
+
+RewriteEngine on
+RewriteRule ^api/([^/]*)$ api/api.php [NC,L]
+
+</IfModule>

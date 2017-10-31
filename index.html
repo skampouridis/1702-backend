@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html lang = "en">
+
+	<head>
+
+		<meta charset = "utf-8" />
+		<meta name = "viewport" content = "width=device-width, initial-scale=1, user-scalable=1, minimal-ui" />
+		<meta http-equiv = "X-UA-Compatible" content = "IE=edge,chrome=1" />
+		<title>A demo REST API for retrieving ship positions</title>
+
+		<!-- Responsiville CSS files -->
+
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.def.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.bugsy.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.moressette.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.ingrid.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.accordion.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.drawers.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.megamenu.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.mobimenu.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.scrollmenu.css" />
+		<link rel = "stylesheet" type = "text/css" href = "responsiville/css/responsiville.slideshow.css" />
+
+		<!-- A basic stylesheet -->
+		<link rel = "stylesheet" type = "text/css" href = "css/style.css" />
+
+		<!-- Third party Javascript libraries - Responsiville dependencies -->
+
+		<script type = "text/javascript" charset = "utf-8" src = "js/jquery-3.1.0.min.js"></script>
+
+		<script type = "text/javascript" charset = "utf-8" src = "js/velocity.min.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "js/hammer.min.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "js/jquery.hammer.js"></script>
+
+
+		<!-- Responsiville init variables -->
+
+		<script type = "text/javascript">
+
+			RESPONSIVILLE_AUTO_INIT = true;
+			RESPONSIVILLE_DEBUG     = false;
+
+		</script>
+
+		<!-- Responsiville Javascript files -->
+
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.def.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.bugsy.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.events.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.main.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.main.run.js"></script>
+
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.accordion.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.equalheights.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.drawers.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.megamenu.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.mobimenu.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.parallax.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.responsiveelement.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.scrollmenu.js"></script>
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.slideshow.js"></script>
+
+		<script type = "text/javascript" charset = "utf-8" src = "responsiville/js/responsiville.run.js"></script>
+
+		<!-- The current URL, to be used throught this document -->
+		<script type = "text/javascript">
+			PAGE_URL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+		</script>
+
+	</head>
+
+	<body>
+
+		<div class = "site-wrapper row">
+
+			<div class = "sidebar column-20">
+
+				<nav class = "main-navigation navigation vertical">
+					<h2>Menu</h2>
+					<ul>
+						<li><a href = "#general-info">General information</a></li>
+						<li><a href = "#requirements">Requirements</a></li>
+						<li><a href = "#configuration">Configuration</a></li>
+						<li><a href = "#install-sample-data">Sample data installation</a></li>
+						<li>
+							<a href = "#api">The API</a>
+							<ul>
+								<li><a href = "#api-description">Description</a></li>
+								<li><a href = "#api-methods">Request methods</a></li>
+								<li><a href = "#api-parameters">Request parameters</a></li>
+								<li>
+									<a href = "#api-responses">Responses</a>
+									<ul>
+										<li><a href = "#api-response-codes">Response status codes</a></li>
+										<li><a href = "#api-response-formats">Response formats</a></li>
+									</ul>
+								</li>
+								<li><a href = "#api-usage">Usage</a></li>
+							</ul>
+						</li>
+						<li>
+							<a href = "#notes">Notes</a>
+							<ul>
+								<li><a href = "#simplifications">Simplifications</a></li>
+								<li><a href = "#directory-structure">Directory structure</a></li>
+							</ul>
+						</li>
+					</ul>
+				</nav> <!-- .main-navigation -->
+
+			</div> <!-- .sidebar -->
+
+			<div class = "site-content column-80 margin-20">
+
+				<article class = "text">
+
+					<h1>API Documentation</h1>
+
+					<h2 id = "general-info">General information</h2>
+
+						<p>This is a simple page to document and demonstrate the use of a simple RESTful API, which is used to retrieved ship routes.</p>
+
+						<p>You can either read on, or go right to <code><script type = "text/javascript">document.write(PAGE_URL);</script>api/api.php</code> and have fun!</p>
+
+					<h2 id = "requirements">Requirements</h2>
+
+						<p>The API requires proper read and write privileges to a MySQL database, and PHP 5+.</p>
+
+						<p>It is also assumed that a database containing the required tables, using the schema expected by the API, is already in place and accessible. These tables can be created either by hand, or automatically by running the <a href = "#install-sample-data">sample data installation script</a>.</p>
+
+						<p>Should one choose to create the database tables by hand, the following schema should be used:
+							<ul>
+								<li>
+									Table <code>ship_data</code> with the following fields
+									
+									<table>
+										<thead><tr><td>Name</td><td>Type</td></tr></thead>
+										<tbody>
+											<tr>
+												<td><code>mmsi</code></td>
+												<td><code>VARCHAR(20) NOT NULL</code></td>
+											</tr>
+											<tr>
+												<td><code>status</code></td>
+												<td><code>SMALLINT unsigned</code></td>
+											</tr>
+											<tr>
+												<td><code>speed</code></td>
+												<td><code>SMALLINT unsigned NOT NULL</code></td>
+											</tr>
+											<tr>
+												<td><code>lon</code></td>
+												<td><code>DECIMAL(9,6) NOT NULL</code></td>
+											</tr>
+											<tr>
+												<td><code>lat</code></td>
+												<td><code>DECIMAL(9,6) NOT NULL</code></td>
+											</tr>
+											<tr>
+												<td><code>course</code></td>
+												<td><code>SMALLINT unsigned</code></td>
+											</tr>
+											<tr>
+												<td><code>heading</code></td>
+												<td><code>SMALLINT unsigned</code></td>
+											</tr>
+											<tr>
+												<td><code>rot</code></td>
+												<td><code>FLOAT</code></td>
+											</tr>
+											<tr>
+												<td><code>timestamp</code></td>
+												<td><code>DATETIME(3) NOT NULL</code></td>
+											</tr>
+											
+										</tbody>
+									</table>
+								</li>
+								<li>
+									Table <code>access_log</code> with the following fields
+								
+									<table>
+										<thead><tr><td>Name</td><td>Type</td></tr></thead>
+										<tbody>
+											<tr>
+												<td><code>remote_ip</code></td>
+												<td><code>VARCHAR(20) NOT NULL</code></td>
+											</tr>
+											<tr>
+												<td><code>timestamp</code></td>
+												<td><code>DATETIME(3) NOT NULL</code></td>
+											</tr>
+										</tbody>
+									</table>
+
+								</li>
+							</ul>
+						</p>
+
+					<h2 id = "configuration">Configuration</h2>
+
+						<p>Before accessing the API, one should edit the proper information for the database connection by editing the file <code>api/db-connection-info.php</code>.</p>
+
+						<p>This information is defined as PHP constants as follows:
+							<ul>
+								<li><code>DB_HOST</code>: The database server's hostname or IP address.</li>
+								<li><code>DB_NAME</code>: The name of the database to use.</li>
+								<li><code>DB_USER</code>: The user to use in order to connect to the database. Must have both read and write privileges.</li>
+								<li><code>DB_PASS</code>: The user's password</li>
+							</ul>
+						</p>
+
+					<h2 id = "install-sample-data">Sample data installation</h2>
+
+						<p>After ensuring that an accessible database is in place, and that its <a href = "#configuration">connection information</a> is properly configured, on can proceed with loading sample data.</p>
+
+						<p>There are two ways to initialize and populate the database: either by using the bundled sample data installation script (see below), or by importing the database dump located at <code><script type = "text/javascript">document.write(PAGE_URL);</script>api/install/db.sql</code>.</p>
+
+						<p>This can be performed automatically by executing the script <code>api/install/install-sample-data.php</code>. The script will create the necessary tables, read the sample data from the file <code>ship_positions.csv</code>, which is located in the same directory, and import it.</p>
+
+						<p>Note that if existing data is found inside the <code>ship_data</code> table, the script will terminate its execution and display an error message. To force the wiping-out of all existing data and re-populate the table from scratch, one should access the script by setting the <code>force_overwrite</code> GET parameter with the value <code>true</code>, like this: <code><script type = "text/javascript">document.write(PAGE_URL);</script>api/install/install-sample-data.php?force_overwrite=true</code>.</p>
+
+						<p>Also note that the automated-import script does not perform any data validation. The data is assumed to come from a safe source and be already validated.</p>
+
+					<h2 id = "api">The API</h2>
+
+						<h3 id = "api-description">Description</h3>
+
+							<p>This API serves <strong>records of vessel tracks</strong>. Each vessel is identified by its MMSI, while each record also contains the vessel's status, speed, coordinates (latitude and longtitude), course, heading, ROT (rate of turn), as well as a timestamp indicating when the record was reported.</p>
+
+							<p>The API is filterable by <strong>MMSI</strong>, single or multiple, <strong>latitude</strong> and <strong>longtitude</strong> (both supporting minimum and maximum values to indicate a range), and <strong>timestamp</strong> (also supporting from/to values to indicate an interval). See the <a href = "#api-parameters">Request Parameters</a> section for further information on filtering options.</p>
+
+							<p>The API restricts access to an hourly limit of 10 requests per client. The client is identified by the remote IP. For the sake of simplicity, remote IPs are expected to be <strong>IPv4</strong> addresses. For the same reason, the remote IP is considered to be the one reported in <code>$_SERVER['REMOTE_ADDR']</code>, which will be inaccurate in case of requests received via proxies.</p>
+
+						<h3 id = "api-methods">Request methods</h3>
+
+							<p>Only the <code>GET</code> HTTP method is supported. See the <a href = "#api-response-codes">Response Codes</a> section for further information on accessing the API via other methods.</p>
+
+						<h3 id = "api-parameters">Request parameters</h3>
+
+							<p>The supported <code>GET</code> parameters, along with their expected values and usage, are listed below.</p>
+
+							<table>
+								<thead>
+									<tr><td>Parameter</td><td>Description</td><td>Type</td><td>Examples</td></tr>
+								</thead>
+								<tbody>
+
+									<tr><td><code>mmsi</code></td><td>The vessel's MMSI (single or multiple).<br/>Optional. Default: none</td><td>Each MMSI is considered to be a sequence of alphanumeric characters.</td><td><code>mmsi=247039300</code> to request a single MMSI.<br/><code>mmsi[]=247039300&amp;mmsi[]=123456789</code> to request multiple MMSIs.</td></tr>
+
+									<tr><td><code>longtitude_min</code></td><td>Restricts results to a minimum reported longtitude.<br/>Optional. Default: none</td><td>Decimal number, between -180 and 180 (inclusive).</td><td><code>longtitude_min=-123.45</code></td></tr>
+
+									<tr><td><code>longtitude_max</code></td><td>Restricts results to a maximum reported longtitude.<br/>Optional. Default: none</td><td>Decimal number, between -180 and 180 (inclusive).</td><td><code>longtitude_max=123.45</code></td></tr>
+
+									<tr><td><code>latitude_min</code></td><td>Restricts results to a minimum reported latitude.<br/>Optional. Default: none</td><td>Decimal number, between -90 and 90 (inclusive).</td><td><code>latitude_min=-88.45</code></td></tr>
+
+									<tr><td><code>latitude_max</code></td><td>Restricts results to a maximum reported latitude.<br/>Optional. Default: none</td><td>Decimal number, between -90 and 90 (inclusive).</td><td><code>latitude_max=88.45</code></td></tr>
+
+									<tr><td><code>date_from</code></td><td>Restricts results to those recorded at or after a given point in time.<br/>Optional. Default: none</td><td>UNIX timestamp.</td><td><code>date_from=1486996200</code> to restrict results to those recorded at or after February 13, 2017 2:30PM GMT</td></tr>
+
+									<tr><td><code>date_to</code></td><td>Restricts results to those recorded at or before a given point in time.<br/>Optional. Default: none</td><td>UNIX timestamp.</td><td><code>date_to=1486996200</code> to restrict results to those recorded at or before February 13, 2017 2:30PM GMT</td></tr>
+
+									<tr><td><code>format</code></td><td>The format in which the results will be returned.<br/>Optional. Default: <code>json</code></td><td>
+										<ul>
+											<li><code>json</code> will return the results in JSON format.</li>
+											<li><code>xml</code> will return the results in XML format.</li>
+											<li><code>csv</code> will return the results in CSV format.</li>
+										</ul>
+									</td><td><code>format=xml</code></td></tr>
+
+								</tbody>
+							</table>
+
+						<!-- Responses -->
+						<h3 id = "api-responses">Responses</h3>
+
+							<!-- Response codes -->
+							<h4 id = "api-response-codes">Response status codes</h4>
+
+								<p>The HTTP status codes of the response, along with their meaning, are listed below.</p>
+
+								<table>
+									<thead>
+										<tr><td>Code</td><td>Description</td></tr>
+									</thead>
+									<tbody>
+										<tr><td>200</td><td>Results matching the given parameters were found, and are returned in the requested format.</td></tr>
+										<tr><td>400</td><td>Invalid parameters. No data returned.<br/>This case includes extra parameters not listed in the <a href = "#api-parameters">Request Parameters</a> section, as well as invalid parameter values.</td></tr>
+										<tr><td>404</td><td>No records matching the given parameters. No data returned.</td></tr>
+										<tr><td>405</td><td>API accessed via an invalid HTTP method (other than <code>GET</code>). No data returned.</td></tr>
+										<tr><td>429</td><td>Client IP exceeded its hourly limit of requests. No data returned.</td></tr>
+										<tr><td>500</td><td>An internal error has occured. No data returned.</td></tr>
+									</tbody>
+								</table>
+
+							<h4 id = "api-response-formats">Response formats</h4>
+
+								<p>Each record (row) of returned data (if any data were returned), consists of the following fields.</p>
+
+								<table>
+									<thead>
+										<tr><td>Field</td><td>Description</td></tr>
+									</thead>
+									<tbody>
+										<tr><td>mmsi</td><td>The MMSI of the vessel to which each record refers.</td></tr>
+										<tr><td>status</td><td>AIS vessel status.</td></tr>
+										<tr><td>speed</td><td>The vessel's speed in knots x 10.</td></tr>
+										<tr><td>lon</td><td>The vessel's longtitude.</td></tr>
+										<tr><td>lat</td><td>The vessel's latitude.</td></tr>
+										<tr><td>course</td><td>The vessel's course over ground.</td></tr>
+										<tr><td>heading</td><td>The vessel's true heading.</td></tr>
+										<tr><td>rot</td><td>The vessel's rate of turn.</td></tr>
+										<tr><td>timestamp</td><td>The timestamp of the moment that the position was recorded.</td></tr>
+									</tbody>
+								</table>
+
+								<p>It is important to note that, if <code>JSON</code> or <code>XML</code> formats were requested, the field names will be present as attribute names. In the case of <code>CSV</code> however, the field names are ommitted (i.e. there is no header row), although the field order is retained.</p>
+
+						<h3 id = "api-usage">Usage</h3>
+
+						<p>The API can be accessed via HTTP GET on <code><script type = "text/javascript">document.write(PAGE_URL);</script>api/api.php</code>. However, for convenience, an <code>.htaccess</code> file is included, which contains some basic URL-rewriting directives, in order for the API to be accessible at <code><script type = "text/javascript">document.write(PAGE_URL);</script>api</code>.</p>
+
+					<!-- Notes -->
+					<h2 id = "notes">Notes</h2>
+
+						<h3 id = "simplifications">Simplifications</h3>
+
+							<p>For the sake of simplicity and time, some <strong>compromises and assumptions</strong> were necessary. These are listed here for informational purposes.</p>
+
+							<p>Fields that were <strong>missing</strong> from the given sample data file were ommitted from the implementation as a whole (i.e. the <code>STATION</code> field).</p>
+
+							<p>Fields that were <strong>unpopulated</strong> in the given sample data file were assumed to have an arbitrary format, which might be incompatible with actual, real-world values.</p>
+
+							<p>There was no <strong>internal logging</strong> mechanism implemented, although it would be a must-have in a production environment.</p>
+
+							<p>XML and CSV output is created "by hand" in a simple way, although much more sophisticated solutions probably exist.</p>
+
+						<h3 id = "directory-structure">Directory structure</h3>
+
+							<table>
+								<tr><td>%root_dir%/</td><td>Contains the files required to display this page.</td></tr>
+								<tr><td>%root_dir%/api</td><td>Contains the code of the API itself.</td></tr>
+								<tr><td>%root_dir%/api/install</td><td>Contains the sample data file, and the script to import it.</td></tr>
+							</table>
+
+				</article>
+
+				<footer>
+					
+					<div class = "footer-credits">
+						<p>
+							This documentation, along with the demo API it describes, was created by <a href="mailto:zachop@gmail.com">Antonis Zachopoulos</a>, in October 2017, in the context of a work-sample project for MarineTraffic.
+						</p>
+					</div> <!-- .footer-credits -->
+
+				</footer>
+
+			</div> <!-- .site-content -->
+
+		</div> <!-- .site-wrapper -->
+
+	</body>
+
+</html>
