@@ -6,11 +6,16 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
      * @return void
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+
+        /** Call Table Seeder classes with desired order with desired data. */
+
+        $this->call([
+            VesselsTableSeeder::class,
+            VesselTracksTableSeeder::class
+        ]);
     }
 }

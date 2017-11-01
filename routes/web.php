@@ -11,4 +11,6 @@
 |
 */
 
-Route::get('/', function () { return 'Welcome'; });
+Route::get('/', function() {
+    return view('main');
+});

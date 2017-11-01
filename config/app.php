@@ -167,6 +167,8 @@ return [
         /*
          * Package Service Providers...
          */
+        Neoxia\Routing\ResponseFactoryServiceProvider::class,
+        XmlResponse\XmlResponseServiceProvider::class,
 
         /*
          * Application Service Providers...
