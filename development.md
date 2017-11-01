@@ -2,6 +2,10 @@
 
 Implemented with Laravel 5.5.19 with libraries **neoxia/laravel-csv-response** and **jailtonsc/laravel-response-xml** to enable xml and csv Responses.
 
+Further development:
+1. Using different framework, Laravel is not the best for an API handling the amount of requests or the size of a project like this
+2. Further optimization on database data types, and response data is needed
+
 #### Development tools
 > * osx php7
 > * osx mysql server
