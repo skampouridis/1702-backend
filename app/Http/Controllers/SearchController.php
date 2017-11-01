@@ -44,10 +44,10 @@ class SearchController extends Controller
         return Validator::make($request->all(), [
             'ip' => 'required|ip',
             'vessels.*' => 'integer',
-            'location.lat.from' => 'required_with:location.lat.to,location.lon.from,location.lon.to',
-            'location.lat.to' => 'required_with:location.lat.from,location.lon.from,location.lon.to',
-            'location.lon.from' => 'required_with:location.lat.from,location.lat.to,location.lon.to',
-            'location.lon.to' => 'required_with:location.lat.from,location.lat.to,location.lon.from',
+            'location.lat.from' => 'numeric|between:-90,90|required_with:location.lat.to,location.lon.from,location.lon.to',
+            'location.lat.to' => 'numeric|between:-90,90|required_with:location.lat.from,location.lon.from,location.lon.to',
+            'location.lon.from' => 'numeric|between:-180,180|required_with:location.lat.from,location.lat.to,location.lon.to',
+            'location.lon.to' => 'numeric|between:-180,180|required_with:location.lat.from,location.lat.to,location.lon.from',
             'time.from' => 'date_format:Y-m-d H:i:s|required_with:time.to',
             'time.to' => 'date_format:Y-m-d H:i:s|required_with:time.from'
         ]);
@@ -120,7 +120,8 @@ class SearchController extends Controller
         $request->merge(['ip' => $request->getClientIp()]);
 
         /** Validate Request Data */
-        if ($validator = $this->searchValidator($request)->fails()) {
+        $validator = $this->searchValidator($request);
+        if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
             ])->setStatusCode(408);
