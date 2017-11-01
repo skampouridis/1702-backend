@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', function() {
-    return view('main');
-});
+Route::get('/', function () {
+    return view('index');
+})->name('home');
+
+Route::any('{query}', function () {
+    return redirect('/');
+})->where('query', '.*');

@@ -26,9 +26,12 @@ class VesselTrackController extends Controller
      */
     public function show($id)
     {
-        $track = VesselTrack::with('vessel')->findOrFail($id);
+        if (VesselTrack::where('id', $id)->exists()) {
+            $track = VesselTrack::with('vessel')->find($id);
 
-        return new VesselTrackResource($track);
+            return new VesselTrackResource($track);
+        }
+        return response()->json(['error' => 'Not Found.'])->setStatusCode(404);
     }
 
 }

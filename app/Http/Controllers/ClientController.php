@@ -27,9 +27,12 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $client = Client::with('searches')->findOrFail($id);
+        if (Client::where('id', $id)->exists()) {
+            $client = Client::with('searches')->find($id);
 
-        return new ClientResource($client);
+            return new ClientResource($client);
+        }
+        return response()->json(['error' => 'Not Found.'])->setStatusCode(404);
     }
 
 }

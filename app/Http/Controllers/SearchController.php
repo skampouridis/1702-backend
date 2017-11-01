@@ -30,9 +30,13 @@ class SearchController extends Controller
      */
     public function show($id)
     {
-        $search = Search::with(['vessels','tracks'])->findOrFail($id);
 
-        return new SearchResource($search);
+        if (Search::where('id', $id)->exists()) {
+            $search = Search::with(['vessels','tracks'])->find($id);
+
+            return new SearchResource($search);
+        }
+        return response()->json(['error' => 'Not Found.'])->setStatusCode(404);
     }
 
     /**
@@ -101,7 +105,7 @@ class SearchController extends Controller
     private function requestLimitReached(Client $client)
     {
         $requestLimit = 10;
-        $beforeOneHour = date('Y-m-d H:i:s', strtotime('-1 days'));
+        $beforeOneHour = date('Y-m-d H:i:s', strtotime('-1 hours'));
 
         $requests = Search::where('client_id', '=', $client->id)
                           ->where('created_at', '>=', $beforeOneHour)
@@ -132,7 +136,7 @@ class SearchController extends Controller
         /** Check Request Limit */
         if ($this->requestLimitReached($client)) {
             return response()->json([
-                'errors' => ['Request per hour limit reached. Limit is 10 Requests per hour']
+                'errors' => ['Request per hour limit reached' => ['Limit is 10 Requests per hour']]
             ])->setStatusCode(409);
         }
 
@@ -178,9 +182,9 @@ class SearchController extends Controller
         /** Response based to Client selection Available formats json, xml, csv */
         if (isset($request->response_format) && in_array($request->response_format, ['xml', 'csv'])) {
             if ($request->response_format == 'xml') {
-                return response()->xml($tracks);
+                return response()->xml($tracks)->setStatusCode(201);
             } else if ($request->response_format == 'csv') {
-                return response()->csv($tracks);
+                return response()->csv($tracks)->setStatusCode(202);
             }
         }
 

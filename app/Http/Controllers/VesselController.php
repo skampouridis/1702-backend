@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Vessel;
-use App\http\Resources\Vessel as VesselResource;
+use App\Http\Resources\Vessel as VesselResource;
 use App\Http\Resources\VesselCollection;
 
 class VesselController extends Controller
@@ -24,9 +24,12 @@ class VesselController extends Controller
      */
     public function show($id)
     {
-        $vessel = Vessel::with(['tracks', 'searches'])->findOrFail($id);
+        if (Vessel::where('id', $id)->exists()) {
+            $vessel = Vessel::with(['tracks', 'searches'])->find($id);
 
-        return new VesselResource($vessel);
+            return new VesselResource($vessel);
+        }
+        return response()->json(['error' => 'Not Found.'])->setStatusCode(404);
     }
 
 }

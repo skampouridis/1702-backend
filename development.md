@@ -12,44 +12,38 @@ Implemented with Laravel 5.5.19 with libraries **neoxia/laravel-csv-response** a
 
 #### Terminal commands
 ##### Project initiation
->
-1. `composer global require "laravel/installer"`
-2. `laravel new marine`
-3. `composer require neoxia/laravel-csv-response`
-4. `composer require jailtonsc/laravel-response-xml`
-5. `php artisan vendor:publish (Select laravel-response-xml) `
+> 1. `composer global require "laravel/installer"`
+> 2. `laravel new marine`
+> 3. `composer require neoxia/laravel-csv-response`
+> 4. `composer require jailtonsc/laravel-response-xml`
+> 5. `php artisan vendor:publish (Select laravel-response-xml) `
 
 ##### Models
->
-1. `php artisan make:model Vessel --migration`
-2. `php artisan make:model VesselTrack --migration`
-3. `php artisan make:model Client --migration`
-4. `php artisan make:model Search --migration`
+> 1. `php artisan make:model Vessel --migration`
+> 2. `php artisan make:model VesselTrack --migration`
+> 3. `php artisan make:model Client --migration`
+> 4. `php artisan make:model Search --migration`
 
 #### Migration pivot tables
->
-1. `php artisan make:migration create_search_vessel_table --table=search\_vessel`
-2. `php artisan make:migration create_search_vessel_track_table --table=search\_vessel\_track`
+> 1. `php artisan make:migration create_search_vessel_table --table=search\_vessel`
+> 2. `php artisan make:migration create_search_vessel_track_table --table=search\_vessel\_track`
 
 ##### Seeders
->
- 1. `php artisan make:seeder VesselsTableSeeder`
- 2. `php artisan make:seeder VesselTracksTableSeeder`
+> 1. `php artisan make:seeder VesselsTableSeeder`
+> 2. `php artisan make:seeder VesselTracksTableSeeder`
 
 ##### Resources
->
-1. `php artisan make:resource Client`
-2. `php artisan make:resource ClientCollection`
-3. `php artisan make:resource Vessel`
-4. `php artisan make:resource VesselCollection`
-5. `php artisan make:resource VesselTrack`
-6. `php artisan make:resource VesselTrackCollection`
-7. `php artisan make:resource Search`
-8. `php artisan make:resource SearchCollection`
+> 1. `php artisan make:resource Client`
+> 2. `php artisan make:resource ClientCollection`
+> 3. `php artisan make:resource Vessel`
+> 4. `php artisan make:resource VesselCollection`
+> 5. `php artisan make:resource VesselTrack`
+> 6. `php artisan make:resource VesselTrackCollection`
+> 7. `php artisan make:resource Search`
+> 8. `php artisan make:resource SearchCollection`
 
 ##### Controllers
->
-1. `php artinan make:controller ClientCotnroller --resource`
-2. `php artinan make:controller VesselCotnroller --resource`
-3. `php artisan make:controller SearchController --resource`
-4. `php artisan make:controller VesseTrackCotntroller --resource`
+> 1. `php artinan make:controller ClientCotnroller --resource`
+> 2. `php artinan make:controller VesselCotnroller --resource`
+> 3. `php artisan make:controller SearchController --resource`
+> 4. `php artisan make:controller VesseTrackCotntroller --resource`

@@ -12,6 +12,10 @@
 */
 $availableResourceRoutes = ['index', 'show'];
 
+Route::get('/', function(){
+   return view('index');
+});
+
 Route::post('search', 'SearchController@search');
 
 Route::resource('clients', 'ClientController', ['only' => $availableResourceRoutes]);
