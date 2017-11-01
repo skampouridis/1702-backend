@@ -6,6 +6,7 @@ Further development:
 1. Using different framework, Laravel is not the best for an API handling the amount of requests or the size of a project like this
 2. Further optimization on database data types, and response data is needed
 
+Schema of the database is included in the Project root folder. File is database.sql
 There is working copy of the implementation in https://www.manoloudis.gr/marine
 
 #### Development tools
