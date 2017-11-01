@@ -26,8 +26,8 @@ class CreateVesselTracksTable extends Migration
             $table->integer('vessel_id');
             $table->tinyInteger('status');
             $table->mediumInteger('speed');
-            $table->decimal('lon', 7, 5);
-            $table->decimal('lat', 7, 5);
+            $table->decimal('lon', 8, 5);
+            $table->decimal('lat', 8, 5);
             $table->mediumInteger('course');
             $table->mediumInteger('heading');
             $table->string('rot', 20)->nullable();

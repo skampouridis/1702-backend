@@ -21,10 +21,10 @@ class CreateSearchesTable extends Migration
             /** Fields */
             $table->integer('id', true);
             $table->integer('client_id');
-            $table->decimal('lon_from', 7, 5)->nullable();
-            $table->decimal('lon_to', 7, 5)->nullable();
-            $table->decimal('lat_from', 7, 5)->nullable();
-            $table->decimal('lat_to', 7, 5)->nullable();
+            $table->decimal('lon_from', 8, 5)->nullable();
+            $table->decimal('lon_to', 8, 5)->nullable();
+            $table->decimal('lat_from', 8, 5)->nullable();
+            $table->decimal('lat_to', 8, 5)->nullable();
             $table->timestamp('time_from')->nullable();
             $table->timestamp('time_to')->nullable();
             $table->integer('results')->default(0);
