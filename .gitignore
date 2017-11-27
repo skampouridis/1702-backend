@@ -1,1 +1,6 @@
-.~lock.ship_positions.csv#
+### JetBrains Files
+.idea
+### Node Files
+node_modules/
+
+package-lock.json
