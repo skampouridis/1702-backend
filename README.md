@@ -1,8 +1,9 @@
-# Vessels Tracks API 
+# Vessels Tracks API
 
 Your task is to create a **RESTful API** that serves vessel tracks from a raw vessel positions data-source.
-The raw data is supplied as a JSON file that you must import to a database schema of your choice. Fields supplied are:
+The raw data is supplied as a JSON file that you must import to a database schema of your choice.
 
+Fields supplied are:
 * **mmsi**: unique vessel identifier
 * **status**: AIS vessel status
 * **station**: receiving station ID
@@ -15,13 +16,16 @@ The raw data is supplied as a JSON file that you must import to a database schem
 * **timestamp**: position timestamp
 
 **The API end-point must:**
-* Be filterable by: 
-  * **mmsi** (single or multiple) 
+* Support the following filters: 
+  * **mmsi** (single or multiple)
   * **latitude** and **longitude range**
   * as well as **time interval**.
-* Log incoming requests to a datastore of  your choise (plain text, database, third party service etc.)
+* Log incoming requests to a datastore of  your choice (plain text, database, third party service etc.)
 * Limit requests per user to **10/hour**. (Use the request remote IP as a user identifier)
-* Define a content negotiation parameter that defines output format, in **JSON**, **XML** or **CSV**.
+* Support the following content types:
+  * At least two of the following: application/json, application/vnd.api+json, application/json, application/ld+json, application/hal+json
+  * application/xml
+  * text/csv
 
 **Share your work:**
 * Stage your solution on a demo page or
